@@ -9,16 +9,15 @@ tabuleiroInicial([
     [null, white, black, black, white, black, white, null]
     ]).
     
-tabuleiroFinal([
-    [null, empty, empty, empty, empty, white, empty, null],
-    [empty, empty, empty, black, black, black, empty, empty],
-    [empty, empty, white, empty, white, white, black, empty],
-    [empty, black, black, black, black, black, white, empty],
-    [empty, empty, empty, empty, white, black, white, empty],
-    [empty, black, white, empty, white, white, white, empty],
-    [empty, empty, empty, empty, black, white, empty, empty],
-    [null, empty, empty, empty, empty, empty, empty, null]
-    ]).
+pos(0,' ').    
+pos(1,'a').
+pos(2,'b').
+pos(3,'c').
+pos(4,'d').
+pos(5,'e').
+pos(6,'f').
+pos(7,' ').
+
 
 
 symbol(empty, '.').
@@ -28,15 +27,21 @@ symbol(white,'W').
 
 display_game(Board, Player):-
     tabuleiroInicial(Board),
-    format('It\'s ~p\'s turn ~n', [Player]),
-    imprimeTabuleiro(Board).
-
-
-imprimeTabuleiro([Head|Tail]) :-
-    write('|'),
-    imprimeLinha(Head),
     nl,
-    imprimeTabuleiro(Tail).
+    write('       | 1 | 2 | 3 | 4 | 5 | 6 |   \n'),
+    write('       |---|---|---|---|---|---|\n'),
+    imprimeTabuleiro(Board, 0).
+
+
+imprimeTabuleiro([Head|Tail], Number) :-
+    pos(Number, L),
+    write(' '),
+    write(L),
+    Number1 is Number + 1,
+    write(' |'),
+    imprimeLinha(Head),
+    write('\n---|---|---|---|---|---|---|---|---\n'),
+    imprimeTabuleiro(Tail, Number1).
 imprimeTabuleiro([ ]).
 
 imprimeLinha([Head|Tail]) :-
