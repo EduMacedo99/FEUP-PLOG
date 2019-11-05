@@ -11,9 +11,10 @@ manageInput(0) :-
     write('Leaving'),
     nl.
 
-checkInput(1) :-
+manageInput(1) :-
+    write('Starting game ...\n'),
     game('P','P'),
-    menu.
+    write('Thanks for playing!\n').
 
 displayMenu :-
     nl,nl,

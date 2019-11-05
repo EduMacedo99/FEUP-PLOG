@@ -1,15 +1,27 @@
-game(P1, 2) :-
-      initialBoard(InitialBoard), %fazer isto random?
-      mainLoop(WorkersBoard, Player1, Player2).
+game(Player1, Player2) :-
+      tabuleiroInicial(Board), %fazer isto random?
+      display_game(Board),
+      askCoords(NewRow, NewColumn),
+      checkWhiteCoord(NewRow, NewColumn, Board),
+      write('ok\n').
+      %mainLoop(WorkersBoard, Player1, Player2).
 
-mainLoop(Board, Player1, Player2):-
-    
+%mainLoop(Board, Player1, Player2):-
 
 
+
+askCoords(NewRow, NewColumn):-
+    askRow(NewRow),
+    nl,
+    askColumn(NewColumn),
+    nl.
 
 getPeca(NLinha, NColuna, Board, Peca):-
-    nth1(NLinha, Board, Linha),
-    nth1(NCouna, Board, Peca).
+    nth1(NLinha, Board, NColuna),
+    nth1(NColuna, Board, Peca).
+
+
+
 
 setPeca(NLinha, NColuna, Peca, TabIn, TabOut):-
     setLinha(NLinha, NColuna, Peca, TabIn, TabOut).
