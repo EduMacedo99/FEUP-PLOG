@@ -34,19 +34,27 @@ checkColumn(7, 7).
 checkColumn(8, 8).
 
 checkColumn(_Column, NewColumn):-
-    write('Invalid Co7568556lumn!\n'),
+    write('Invalid Column!\n'),
     write('> Column?\n'),
     read(Input),
-    checkColumn(Input, NewColumn), !.
+    checkColumn(Input, NewColumn).
 
 checkWhiteCoord(Row, Column, Board, Peca):-
     getPeca(Row, Column, Board, Peca),
     (   Peca \= white ->
     write('not white!\n'), 
-    askCoords(Board, NewBoard),
     fail
     ;   write('Valid answer1!\n')
     ).
+
+checkBlackCoord(Row, Column, Board, Peca):-
+    getPeca(Row, Column, Board, Peca),
+    (   Peca \= black ->
+    write('not black!\n'), 
+    fail
+    ;   write('Valid answer2!\n')
+    ).
+
 
 askBlocks(Number):-
     write('\nHow many blocks do you wish to move?'),

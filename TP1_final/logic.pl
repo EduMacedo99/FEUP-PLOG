@@ -1,13 +1,21 @@
+
+
+
 game(Player1, Player2) :-
       tabuleiroInicial(Board), %fazer isto random?
       display_game(Board),
-      askCoords(Board, NewBoard),!,
-      write('saiu\n'),
-      display_game(NewBoard),
+      mainLoop(Board),
       write('ok\n').
       %mainLoop(Board, Player1, Player2).
 
-%mainLoop(Board, Player1, Player2):-
+mainLoop(Board):-
+    write('> White Player\'s turn...\n'),
+    askCoordsWhite(Board, NewBoard),
+    display_game(NewBoard),
+    write('> Black Player\'s turn...\n'),
+    askCoordsBlack(NewBoard, FinalBoard),
+    display_game(FinalBoard),
+    mainLoop(FinalBoard).
 
 
 
@@ -39,60 +47,60 @@ setColuna(N, Peca, [X | Resto], [X | Mais]):-
 
 
 
-askCoords(Board, NewBoard):-
+
+
+whiteTurn(Board, NewBoard, Row, Column):-
+    getPeca(Row, Column, Board, Peca),
+    checkWhiteCoord(Row, Column, Board, Peca),
+    askBlocks(Number),
+    makeMovement(Row, Column, Board, Number, Peca, NewBoard).
+
+askCoordsWhite(Board, NewBoard):-
     askRow(NewRow),
     nl,
     askColumn(NewColumn),
     whiteTurn(Board, NewBoard, NewRow, NewColumn).
 
+%%%%%%%%%%%%%%%%%%%%%%%
+blackTurn(Board, NewBoard, Row, Column):-
+    getPeca(Row, Column, Board, Peca),
+    checkBlackCoord(Row, Column, Board, Peca),
+    askBlocks(Number),
+    makeMovement(Row, Column, Board, Number, Peca, NewBoard).
 
+askCoordsBlack(Board, NewBoard):-
+    askRow(NewRow),
+    nl,
+    askColumn(NewColumn),
+    blackTurn(Board, NewBoard, NewRow, NewColumn).
+
+%%%%%%%%%%%%%%%%%%%%%%%
  makeMovement(Row, Column, Board, Steps, Peca, NewBoard):-
     write('\nentrou\n'),
     (
         Column == 1 ->
         setPeca(Row, Column, null, Board, Board1),
         setPeca(Row, Column + Steps, Peca, Board1, NewBoard),
-        display_game(NewBoard)
-        ; 
-        write('NAO DEU SET!\n')
+        true
+        ;  write('')
+    ),
+    (
+        Column == 8 ->
+        setPeca(Row, Column, null, Board, Board1),
+        setPeca(Row, Column - Steps, Peca, Board1, NewBoard), true
+        ;  write('')
+    ),
+    (
+        Row == 1 ->
+        setPeca(Row, Column, null, Board, Board1),
+        setPeca(Row + Steps, Column, Peca, Board1, NewBoard),true
+        ;  write('')
+    ),
+    (
+        Row == 8 ->
+        setPeca(Row, Column, null, Board, Board1),
+        setPeca(Row - Steps, Column, Peca, Board1, NewBoard),true
+        ;  write('')
     ).
 
 
-
-
-whiteTurn(Board, NewBoard, Row, Column):-
-    getPeca(Row, Column, Board, Peca),
-    checkWhiteCoord(Row, Column, Board, Peca),
-    askBlocks(Number),!,
-    makeMovement(Row, Column, Board, Number, Peca, NewBoard),!.
-
-
-
-
-
-
-
-
-
-% askCoords(NewRow, NewColumn):-
-%     askRow(NewRow),
-%     nl,
-%     askColumn(NewColumn),
-%     nl.
-
-
-%  makeMovement(Row, Column, Board, Steps, Peca, NewBoard):-
-%     write('\nentrou\n'),
-%     (
-%         Column == 1 ->
-%         setPeca(Row, Column, null, Board, Board1),
-%         setPeca(Row, Column + Steps, Peca, Board1, NewBoard)
-%         ; 
-%         write('Valid answer!\n')
-%     ).
-
-% whiteTurn(Board, NewBoard):-
-%     askCoords(NewRow, NewColumn),
-%     checkWhiteCoord(NewRow, NewColumn, Board, Peca),
-%     askBlocks(Number),
-%     makeMovement(NewRow, NewColumn, Board, Number, Peca, NewBoard).
