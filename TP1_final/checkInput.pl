@@ -15,7 +15,7 @@ checkRow('h', 8).
 checkRow(_Row, NewRow):-
     write('Invalid Row!\n'),
     write('> Row?\n'),
-    read(Input),
+    read(Input),!,
     checkRow(Input, NewRow).
 
 
@@ -34,20 +34,20 @@ checkColumn(7, 7).
 checkColumn(8, 8).
 
 checkColumn(_Column, NewColumn):-
-    write('Invalid Column!\n'),
+    write('Invalid Co7568556lumn!\n'),
+    write('> Column?\n'),
     read(Input),
-    checkColumn(Input, NewColumn).
+    checkColumn(Input, NewColumn), !.
 
 checkWhiteCoord(Row, Column, Board, Peca):-
     getPeca(Row, Column, Board, Peca),
     (   Peca \= white ->
     write('not white!\n'), 
-    askCoords(NewRow, NewColumn),
-    checkWhiteCoord(NewRow, NewColumn, Board)
-    ;   write('Valid answer!\n')
+    askCoords(Board, NewBoard),
+    fail
+    ;   write('Valid answer1!\n')
     ).
 
 askBlocks(Number):-
-    write('\nHow many block do you wish to move?'),
+    write('\nHow many blocks do you wish to move?'),
     read(Number).
-
