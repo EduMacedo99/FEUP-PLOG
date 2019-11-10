@@ -9,12 +9,15 @@ game(Player1, Player2) :-
       %mainLoop(Board, Player1, Player2).
 
 mainLoop(Board):-
+
     write('> White Player\'s turn...\n'),
-    askCoordsWhite(Board, NewBoard),
-    display_game(NewBoard),
-    write('> Black Player\'s turn...\n'),
-    askCoordsBlack(NewBoard, FinalBoard),
-    display_game(FinalBoard),
+        askCoordsWhite(Board, NewBoard),
+        display_game(NewBoard),
+
+        write('> Black Player\'s turn...\n'),
+            askCoordsBlack(NewBoard, FinalBoard),
+            display_game(FinalBoard),
+
     mainLoop(FinalBoard).
 
 
@@ -53,13 +56,14 @@ whiteTurn(Board, NewBoard, Row, Column):-
     getPeca(Row, Column, Board, Peca),
     checkWhiteCoord(Row, Column, Board, Peca),
     askBlocks(Number),
-    makeMovement(Row, Column, Board, Number, Peca, NewBoard).
+    makeMovementDown(Row, Column, Board, Number, Peca, NewBoard).
 
 askCoordsWhite(Board, NewBoard):-
     askRow(NewRow),
     nl,
     askColumn(NewColumn),
     whiteTurn(Board, NewBoard, NewRow, NewColumn).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%
 blackTurn(Board, NewBoard, Row, Column):-
@@ -75,32 +79,111 @@ askCoordsBlack(Board, NewBoard):-
     blackTurn(Board, NewBoard, NewRow, NewColumn).
 
 %%%%%%%%%%%%%%%%%%%%%%%
- makeMovement(Row, Column, Board, Steps, Peca, NewBoard):-
-    write('\nentrou\n'),
+
+decr(X, X1) :-
+    X1 is X-1.
+
+copy(L,R) :- accCp(L,R).
+    accCp([],[]).
+
+accCp([H|T1],[H|T2]) :- accCp(T1,T2).
+
+move1stepRight(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
+    setPeca(Row, Column, empty, Board, Board1),
+    NewColumn is Column +1,
+    setPeca(Row, NewColumn, Peca, Board1, NewBoard),
+    decr(Steps, NewStep).
+
+%%
+
+move1stepLeft(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
+    setPeca(Row, Column, empty, Board, Board1),
+    NewColumn is Column - 1,
+    setPeca(Row, NewColumn, Peca, Board1, NewBoard),
+    decr(Steps, NewStep).
+
+move1stepUp(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
+    setPeca(Row, Column, empty, Board, Board1),
+    NewRow is Row - 1,
+    setPeca(NewRow, Column, Peca, Board1, NewBoard),
+    decr(Steps, NewStep).
+
+move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
+    setPeca(Row, Column, empty, Board, Board1),
+    NewRow is Row + 1,
+    setPeca(NewRow, Column, Peca, Board1, NewBoard),
+    decr(Steps, NewStep).
+%%
+
+ makeMovementRight(Row, Column, Board, Steps, Peca, NewBoard):-
+    NextColumn is Column + 1,
+    getPeca(Row, NextColumn, Board, Peca1),  
     (
-        Column == 1 ->
-        setPeca(Row, Column, null, Board, Board1),
-        setPeca(Row, Column + Steps, Peca, Board1, NewBoard),
-        true
-        ;  write('')
-    ),
-    (
-        Column == 8 ->
-        setPeca(Row, Column, null, Board, Board1),
-        setPeca(Row, Column - Steps, Peca, Board1, NewBoard), true
-        ;  write('')
-    ),
-    (
-        Row == 1 ->
-        setPeca(Row, Column, null, Board, Board1),
-        setPeca(Row + Steps, Column, Peca, Board1, NewBoard),true
-        ;  write('')
-    ),
-    (
-        Row == 8 ->
-        setPeca(Row, Column, null, Board, Board1),
-        setPeca(Row - Steps, Column, Peca, Board1, NewBoard),true
-        ;  write('')
+            Peca1 == empty ->
+                move1stepRight(Row, Column, Board, Steps, Peca, Board1, NewStep),
+                (
+                    NewStep == 0 ->
+                        copy(Board1, NewBoard),
+                        true
+                        ;
+                        NewColumn is Column + 1,
+                        makeMovementRight(Row, NewColumn, Board1, NewStep, Peca, NewBoard)
+                )
+                
+            ;   write('') %TO DO MOVE FORWARD
     ).
-
-
+    
+ makeMovementLeft(Row, Column, Board, Steps, Peca, NewBoard):-
+    NextColumn is Column - 1,
+    getPeca(Row, NextColumn, Board, Peca1),  
+    (
+            Peca1 == empty ->
+                move1stepLeft(Row, Column, Board, Steps, Peca, Board1, NewStep),
+                (
+                    NewStep == 0 ->
+                        copy(Board1, NewBoard),
+                        true
+                        ;
+                        NewColumn is Column - 1,
+                        makeMovementLeft(Row, NewColumn, Board1, NewStep, Peca, NewBoard)
+                )
+                
+            ;   write('') %TO DO MOVE FORWARD
+    ).
+    
+ makeMovementUp(Row, Column, Board, Steps, Peca, NewBoard):-
+    NextRow is Row - 1,
+    getPeca(NextRow, Column, Board, Peca1),  
+    (
+            Peca1 == empty ->
+                move1stepUp(Row, Column, Board, Steps, Peca, Board1, NewStep),
+                (
+                    NewStep == 0 ->
+                        copy(Board1, NewBoard),
+                        true
+                        ;
+                        NewRow is Row - 1,
+                        makeMovementUp(NewRow, Column, Board1, NewStep, Peca, NewBoard)
+                )
+                
+            ;   write('') %TO DO MOVE FORWARD
+    ).
+    
+ makeMovementDown(Row, Column, Board, Steps, Peca, NewBoard):-
+    NextRow is Row + 1,
+    getPeca(NextRow, Column, Board, Peca1),  
+    (
+            Peca1 == empty ->
+                move1stepDown(Row, Column, Board, Steps, Peca, Board1, NewStep),
+                (
+                    NewStep == 0 ->
+                        copy(Board1, NewBoard),
+                        true
+                        ;
+                        NewRow is Row + 1,
+                        makeMovementDown(NewRow, Column, Board1, NewStep, Peca, NewBoard)
+                )
+                
+            ;   write('') %TO DO MOVE FORWARD
+    ).
+    

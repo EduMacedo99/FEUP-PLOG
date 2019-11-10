@@ -33,6 +33,7 @@ checkColumn(6, 6).
 checkColumn(7, 7).
 checkColumn(8, 8).
 
+
 checkColumn(_Column, NewColumn):-
     write('Invalid Column!\n'),
     write('> Column?\n'),
