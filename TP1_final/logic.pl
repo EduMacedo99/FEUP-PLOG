@@ -56,7 +56,29 @@ whiteTurn(Board, NewBoard, Row, Column):-
     getPeca(Row, Column, Board, Peca),
     checkWhiteCoord(Row, Column, Board, Peca),
     askBlocks(Number),
-    makeMovementDown(Row, Column, Board, Number, Peca, NewBoard).
+    (
+        Column == 1 ->
+        makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ),
+    (
+        Column == 8 ->
+        makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ),
+    (
+        Row == 1 ->
+        makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ),
+    (
+        Row == 8 ->
+        makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ).
+
+
+
 
 askCoordsWhite(Board, NewBoard):-
     askRow(NewRow),
@@ -70,7 +92,26 @@ blackTurn(Board, NewBoard, Row, Column):-
     getPeca(Row, Column, Board, Peca),
     checkBlackCoord(Row, Column, Board, Peca),
     askBlocks(Number),
-    makeMovement(Row, Column, Board, Number, Peca, NewBoard).
+    (
+        Column == 1 ->
+        makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ),
+    (
+        Column == 8 ->
+        makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ),
+    (
+        Row == 1 ->
+        makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ),
+    (
+        Row == 8 ->
+        makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
+        ; write('')
+    ).
 
 askCoordsBlack(Board, NewBoard):-
     askRow(NewRow),
