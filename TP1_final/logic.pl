@@ -1,5 +1,5 @@
 game(Player1, Player2) :-
-      tabuleiroFinal(Board), %   tabuleiroInicial(Board), %fazer isto random?
+      tabuleiroInicial(Board), %   tabuleiroInicial(Board), %fazer isto random?
       display_game(Board),
       mainLoop(Board),
       write('ok\n').
