@@ -1,5 +1,5 @@
 game(Player1, Player2) :-
-      tabuleiroInicial(Board), %   tabuleiroInicial(Board), %fazer isto random?
+      tabuleiroFinal(Board), %   tabuleiroInicial(Board), %fazer isto random?
       display_game(Board),
       mainLoop(Board),
       write('ok\n').
@@ -7,7 +7,6 @@ game(Player1, Player2) :-
 
 mainLoop(Board):-
     \+(checkGameOverTop(Board, 1, 1)), %check row 1 between 2 and 7
-    
     write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
@@ -69,9 +68,7 @@ checkGameOverLeft(Board, RowIndex, ColIndex):-
         nl,
         write('=======================\n'),
         write('===    GAME OVER    ===\n'),
-        write('=======================\n'),
-        % true,
-        menu
+        write('=======================\n')
         ; write('')
     ),
     getPeca(NextRowIndex, ColIndex, Board, EndPeca),
@@ -89,9 +86,7 @@ checkColFull(Board, row, col):-
             nl,
             write('=======================\n'),
             write('===    GAME OVER    ===\n'),
-            write('=======================\n'),
-            % true,
-            menu
+            write('=======================\n')
             ; write('')
         ),
 
@@ -112,9 +107,7 @@ checkRowFull(Board, row, col):-
             nl,
             write('=======================\n'),
             write('===    GAME OVER    ===\n'),
-            write('=======================\n'),
-            % true,
-            menu
+            write('=======================\n')
             ; write('')
         ),
         getPeca(row, col, Board, endpeca),

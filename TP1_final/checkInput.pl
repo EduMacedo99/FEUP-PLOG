@@ -34,7 +34,7 @@ checkColumn(8, 8).
 
 
 checkColumn(_Column, _NewColumn):-
-    write('Invalid Column!\n> Choose a new position!'),
+    write('Invalid Column!\n> Choose a new position!\n'),
     fail.
 
 checkWhiteCoord(Row, Column, Board, Peca):-
