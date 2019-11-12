@@ -1,6 +1,3 @@
-
-
-
 game(Player1, Player2) :-
       tabuleiroFinal(Board), %   tabuleiroInicial(Board), %fazer isto random?
       display_game(Board),
@@ -69,10 +66,11 @@ checkGameOverLeft(Board, RowIndex, ColIndex):-
     (
         NextRowIndex == 8 ->
         nl,
-        nl,
-        write('====== GAME OVER ======'),
-        nl,
-        nl
+        write('=======================\n'),
+        write('===    GAME OVER    ===\n'),
+        write('=======================\n'),
+        true,
+        menu
         ; write('')
     ),
     getPeca(NextRowIndex, ColIndex, Board, EndPeca),
@@ -91,10 +89,11 @@ checkLineFull(Row_, Col_):-
         (
             NextRow_ == 8 ->
             nl,
-            nl,
-            write('====== GAME OVER ======'),
-            nl,
-            nl
+            write('=======================\n'),
+            write('===    GAME OVER    ===\n'),
+            write('=======================\n'),
+            true,
+            menu
             ; write('')
         ),
         getPeca(NextRow_, Col_, Board, EndPeca_),
@@ -110,10 +109,11 @@ checkLineFull(Row_, Col_):-
         (
             NextCol_ == 8 ->
             nl,
-            nl,
-            write('====== GAME OVER ======'),
-            nl,
-            nl
+            write('=======================\n'),
+            write('===    GAME OVER    ===\n'),
+            write('=======================\n'),
+            true,
+            menu
             ; write('')
         ),
         getPeca(Row_, NextCol_, Board, EndPeca_),
