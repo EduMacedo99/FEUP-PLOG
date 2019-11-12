@@ -189,7 +189,9 @@ askCoordsWhite(Board, NewBoard):-
     askColumn(NewColumn),
     % verificar se ha peca branca nesta column
     whiteTurn(Board, NewBoard, NewRow, NewColumn).
-    
+
+askCoordsWhite(Board, NewBoard):-
+    askCoordsWhite(Board, NewBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%
 blackTurn(Board, NewBoard, Row, Column):-
@@ -224,6 +226,9 @@ askCoordsBlack(Board, NewBoard):-
     askColumn(NewColumn),
     % verificar se ha peca black nesta column
     blackTurn(Board, NewBoard, NewRow, NewColumn).
+
+askCoordsBlack(Board, NewBoard):-
+    askCoordsBlack(Board, NewBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -277,8 +282,21 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
                         makeMovementRight(Row, NewColumn, Board1, NewStep, Peca, NewBoard)
                 )
                 
-            ;   write('') %TO DO MOVE FORWARD
+            ;   pushRight(Row, Column, Board, Peca1, TempBoard), %POSICAO DA PECAPRESA E Peca1 -> peca a frente
+                makeMovementRight(Row, Column, TempBoard, Steps, Peca, NewBoard)
     ).
+
+pushRight(Row, Column, Board, Peca, TempBoard):-
+    NextColumn is Column +2,
+    NewColumn is Column +1,
+    getPeca(Row, NextColumn, Board, Peca2),
+    (
+        Peca2 == empty ->
+        move1stepRight(Row, NewColumn, Board, 1, Peca, TempBoard, _NewStep)
+        ; pushRight(Row, NewColumn, Board, Peca2, TempBoard)
+    ).
+
+
     
  makeMovementLeft(Row, Column, Board, Steps, Peca, NewBoard):-
     NextColumn is Column - 1,
@@ -295,7 +313,18 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
                         makeMovementLeft(Row, NewColumn, Board1, NewStep, Peca, NewBoard)
                 )
                 
-            ;   write('') %TO DO MOVE FORWARD
+            ;   pushLeft(Row, Column, Board, Peca1, TempBoard), %POSICAO DA PECAPRESA E Peca1 -> peca a frente
+                makeMovementLeft(Row, Column, TempBoard, Steps, Peca, NewBoard)
+    ).
+
+pushLeft(Row, Column, Board, Peca, TempBoard):-
+    NextColumn is Column -2,
+    NewColumn is Column -1,
+    getPeca(Row, NextColumn, Board, Peca2),
+    (
+        Peca2 == empty ->
+        move1stepLeft(Row, NewColumn, Board, 1, Peca, TempBoard, _NewStep)
+        ; pushLeft(Row, NewColumn, Board, Peca2, TempBoard)
     ).
     
  makeMovementUp(Row, Column, Board, Steps, Peca, NewBoard):-
@@ -313,7 +342,19 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
                         makeMovementUp(NewRow, Column, Board1, NewStep, Peca, NewBoard)
                 )
                 
-            ;   write('') %TO DO MOVE FORWARD
+            ;   pushUp(Row, Column, Board, Peca1, TempBoard), %POSICAO DA PECAPRESA E Peca1 -> peca a frente
+                makeMovementUp(Row, Column, TempBoard, Steps, Peca, NewBoard)
+                
+    ).
+
+pushUp(Row, Column, Board, Peca, TempBoard):-
+    NextRow is Row -2,
+    NewRow is Row -1,
+    getPeca(NextRow, Column, Board, Peca2),
+    (
+        Peca2 == empty ->
+        move1stepUp(NewRow, Column, Board, 1, Peca, TempBoard, _NewStep)
+        ; pushUp(NewRow, Column, Board, Peca2, TempBoard)
     ).
     
  makeMovementDown(Row, Column, Board, Steps, Peca, NewBoard):-
@@ -331,6 +372,17 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
                         makeMovementDown(NewRow, Column, Board1, NewStep, Peca, NewBoard)
                 )
                 
-            ;   write('') %TO DO MOVE FORWARD
+            ;   pushDown(Row, Column, Board, Peca1, TempBoard), %POSICAO DA PECAPRESA E Peca1 -> peca a frente
+                makeMovementDown(Row, Column, TempBoard, Steps, Peca, NewBoard)
+    ).
+
+pushDown(Row, Column, Board, Peca, TempBoard):-
+    NextRow is Row +2,
+    NewRow is Row +1,
+    getPeca(NextRow, Column, Board, Peca2),
+    (
+        Peca2 == empty ->
+        move1stepDown(NewRow, Column, Board, 1, Peca, TempBoard, _NewStep)
+        ; pushDown(NewRow, Column, Board, Peca2, TempBoard)
     ).
     

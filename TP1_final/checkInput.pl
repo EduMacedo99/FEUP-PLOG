@@ -3,6 +3,7 @@ askRow(NewRow) :-
     read(Row),
     checkRow(Row, NewRow).
 
+
 checkRow('a', 1).
 checkRow('b', 2).
 checkRow('c', 3).
@@ -12,17 +13,15 @@ checkRow('f', 6).
 checkRow('g', 7).
 checkRow('h', 8).
 
-checkRow(_Row, NewRow):-
-    write('Invalid Row!\n'),
-    write('> Row?\n'),
-    read(Input),!,
-    checkRow(Input, NewRow).
-
+checkRow(_Column, _NewColumn):-
+    write('> Invalid Row!\n'),
+    fail.
 
 askColumn(NewColumn) :-
     write('> Column?\n'),
     read(Column),
     checkColumn(Column, NewColumn).
+
 
 checkColumn(1, 1).
 checkColumn(2, 2).
@@ -34,11 +33,9 @@ checkColumn(7, 7).
 checkColumn(8, 8).
 
 
-checkColumn(_Column, NewColumn):-
-    write('Invalid Column!\n'),
-    write('> Column?\n'),
-    read(Input),
-    checkColumn(Input, NewColumn).
+checkColumn(_Column, _NewColumn):-
+    write('Invalid Column!\n> Choose a new position!'),
+    fail.
 
 checkWhiteCoord(Row, Column, Board, Peca):-
     getPeca(Row, Column, Board, Peca),

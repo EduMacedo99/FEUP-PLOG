@@ -1,7 +1,7 @@
 tabuleiroInicial([
     [null, black, white, black, black, white, white, null],
     [black, empty, empty, empty, empty, empty, empty, black],
-    [white, empty, empty, empty, empty, empty, empty, white],
+    [white, empty, white, empty, black, empty, empty, white],
     [white, empty, empty, empty, empty, empty, empty, black],
     [black, empty, empty, empty, empty, empty, empty, white],
     [black, empty, empty, empty, empty, empty, empty, black],
