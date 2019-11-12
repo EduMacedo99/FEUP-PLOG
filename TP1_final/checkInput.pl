@@ -43,7 +43,7 @@ checkColumn(_Column, NewColumn):-
 checkWhiteCoord(Row, Column, Board, Peca):-
     getPeca(Row, Column, Board, Peca),
     (   Peca \= white ->
-    write('not white!\n'), 
+    write('not white!\n'),
     fail
     ;   write('Valid answer1!\n')
     ).

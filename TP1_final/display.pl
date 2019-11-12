@@ -8,6 +8,17 @@ tabuleiroInicial([
     [white, empty, empty, empty, empty, empty, empty, white],
     [null, white, black, black, white, black, white, null]
     ]).
+
+tabuleiroFinal([
+    [null, empty, empty, empty, empty, black, empty, null],
+    [empty, empty, empty, black, black, black, white, empty],
+    [empty, empty, white, empty, white, white, black, empty],
+    [empty, black, black, black, black, black, white, empty],
+    [empty, empty, empty, empty, white, black, white, empty],
+    [empty, black, white, empty, white, white, white, empty],
+    [empty, empty, empty, empty, black, white, empty, empty],
+    [null, empty, empty, empty, empty, empty, empty, null]
+    ]).    
     
 pos(0,'a').    
 pos(1,'b').

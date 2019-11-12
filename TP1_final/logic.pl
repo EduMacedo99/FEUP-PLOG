@@ -2,25 +2,127 @@
 
 
 game(Player1, Player2) :-
-      tabuleiroInicial(Board), %fazer isto random?
+      tabuleiroFinal(Board), %   tabuleiroInicial(Board), %fazer isto random?
       display_game(Board),
       mainLoop(Board),
       write('ok\n').
       %mainLoop(Board, Player1, Player2).
 
 mainLoop(Board):-
-
+    checkGameOverTop(Board, 1, 1),
+    
     write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
 
-        write('> Black Player\'s turn...\n'),
-            askCoordsBlack(NewBoard, FinalBoard),
-            display_game(FinalBoard),
+    write('> Black Player\'s turn...\n'),
+        askCoordsBlack(NewBoard, FinalBoard),
+        display_game(FinalBoard),
 
     mainLoop(FinalBoard).
 
 
+checkGameOverTop(Board, RowIndex, ColIndex):-
+    NextColIndex is ColIndex + 1,
+    (
+        NextColIndex == 8 ->
+        checkGameOverRight(Board, 1, 1)
+        ; write('')
+    ),
+    getPeca(RowIndex, NextColIndex, Board, EndPeca),
+    (
+        EndPeca == empty -> 
+        checkGameOverTop(Board, RowIndex, NextColIndex)
+        ; checkLineFull(1, NextColIndex)
+    ).
+
+checkGameOverRight(Board, RowIndex, ColIndex):-
+    NextRowIndex is RowIndex + 1,
+    (
+        NextRowIndex == 8 ->
+        checkGameOverBottom(Board, 1, 1)
+        ; write('')
+    ),
+    getPeca(NextRowIndex, ColIndex, Board, EndPeca),
+    (
+        EndPeca == empty -> 
+        checkGameOverRight(Board, NextRowIndex, ColIndex)
+        ; checkLineFull(NextRowIndex, 1)
+    ).
+
+checkGameOverBottom(Board, RowIndex, ColIndex):-
+    NextColIndex is ColIndex + 1,
+    (
+        NextColIndex == 8 ->
+        checkGameOverLeft(Board, 1, 1)
+        ; write('')
+    ),
+    getPeca(RowIndex, NextColIndex, Board, EndPeca),
+    (
+        EndPeca == empty -> 
+        checkGameOverBottom(Board, RowIndex, NextColIndex)
+        ; checkLineFull(1, NextColIndex)
+    ).
+
+checkGameOverLeft(Board, RowIndex, ColIndex):-
+    NextRowIndex is RowIndex + 1,
+    (
+        NextRowIndex == 8 ->
+        nl,
+        nl,
+        write('====== GAME OVER ======'),
+        nl,
+        nl
+        ; write('')
+    ),
+    getPeca(NextRowIndex, ColIndex, Board, EndPeca),
+    (
+        EndPeca == empty -> 
+        checkGameOverLeft(Board, NextRowIndex, ColIndex)
+        ; checkLineFull(NextRowIndex, 1)
+    ).
+
+
+
+checkLineFull(Row_, Col_):-
+    (
+        Col_ == 1 -> 
+        NextRow_ is Row_ + 1,
+        (
+            NextRow_ == 8 ->
+            nl,
+            nl,
+            write('====== GAME OVER ======'),
+            nl,
+            nl
+            ; write('')
+        ),
+        getPeca(NextRow_, Col_, Board, EndPeca_),
+        (
+            EndPeca_ \= empty -> 
+            checkLineFull(Board, NextRow_, Col_)
+            ; checkLineFull(NextRow_, 1)
+        )
+        
+        ; 
+
+        NextCol_ is Col_ + 1,
+        (
+            NextCol_ == 8 ->
+            nl,
+            nl,
+            write('====== GAME OVER ======'),
+            nl,
+            nl
+            ; write('')
+        ),
+        getPeca(Row_, NextCol_, Board, EndPeca_),
+        (
+            EndPeca_ \= empty -> 
+            checkLineFull(Board, Row_, NextCol_)
+            ; checkLineFull(NextCol_, 1)
+        )        
+    ).
 
 
 
@@ -82,10 +184,12 @@ whiteTurn(Board, NewBoard, Row, Column):-
 
 askCoordsWhite(Board, NewBoard):-
     askRow(NewRow),
+    % verificar se ha peca branca nesta row
     nl,
     askColumn(NewColumn),
+    % verificar se ha peca branca nesta column
     whiteTurn(Board, NewBoard, NewRow, NewColumn).
-
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%
 blackTurn(Board, NewBoard, Row, Column):-
@@ -115,8 +219,10 @@ blackTurn(Board, NewBoard, Row, Column):-
 
 askCoordsBlack(Board, NewBoard):-
     askRow(NewRow),
+    % verificar se ha peca black nesta row
     nl,
     askColumn(NewColumn),
+    % verificar se ha peca black nesta column
     blackTurn(Board, NewBoard, NewRow, NewColumn).
 
 %%%%%%%%%%%%%%%%%%%%%%%
