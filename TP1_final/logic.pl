@@ -1,12 +1,12 @@
 game(Player1, Player2) :-
-      tabuleiroFinal(Board), %   tabuleiroInicial(Board), %fazer isto random?
+      tabuleiroInicial(Board), %   tabuleiroInicial(Board), %fazer isto random?
       display_game(Board),
       mainLoop(Board),
       write('ok\n').
       %mainLoop(Board, Player1, Player2).
 
 mainLoop(Board):-
-    checkGameOverTop(Board, 1, 1),
+    \+(checkGameOverTop(Board, 1, 1)), %check row 1 between 2 and 7
     
     write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
@@ -30,7 +30,7 @@ checkGameOverTop(Board, RowIndex, ColIndex):-
     (
         EndPeca == empty -> 
         checkGameOverTop(Board, RowIndex, NextColIndex)
-        ; checkLineFull(1, NextColIndex)
+        ; checkColFull(Board, 2, NextColIndex)
     ).
 
 checkGameOverRight(Board, RowIndex, ColIndex):-
@@ -44,7 +44,8 @@ checkGameOverRight(Board, RowIndex, ColIndex):-
     (
         EndPeca == empty -> 
         checkGameOverRight(Board, NextRowIndex, ColIndex)
-        ; checkLineFull(NextRowIndex, 1)
+        ; 
+        checkRowFull(Board, NextRowIndex, 2)
     ).
 
 checkGameOverBottom(Board, RowIndex, ColIndex):-
@@ -58,7 +59,7 @@ checkGameOverBottom(Board, RowIndex, ColIndex):-
     (
         EndPeca == empty -> 
         checkGameOverBottom(Board, RowIndex, NextColIndex)
-        ; checkLineFull(1, NextColIndex)
+        ; checkRowFull(Board, 2, NextColIndex)
     ).
 
 checkGameOverLeft(Board, RowIndex, ColIndex):-
@@ -69,7 +70,7 @@ checkGameOverLeft(Board, RowIndex, ColIndex):-
         write('=======================\n'),
         write('===    GAME OVER    ===\n'),
         write('=======================\n'),
-        true,
+        % true,
         menu
         ; write('')
     ),
@@ -77,50 +78,51 @@ checkGameOverLeft(Board, RowIndex, ColIndex):-
     (
         EndPeca == empty -> 
         checkGameOverLeft(Board, NextRowIndex, ColIndex)
-        ; checkLineFull(NextRowIndex, 1)
+        ; checkColFull(Board, NextRowIndex, 2)
     ).
 
 
-
-checkLineFull(Row_, Col_):-
+checkColFull(Board, row, col):-
     (
-        Col_ == 1 -> 
-        NextRow_ is Row_ + 1,
         (
-            NextRow_ == 8 ->
+            row == 8 ->
             nl,
             write('=======================\n'),
             write('===    GAME OVER    ===\n'),
             write('=======================\n'),
-            true,
+            % true,
             menu
             ; write('')
         ),
-        getPeca(NextRow_, Col_, Board, EndPeca_),
-        (
-            EndPeca_ \= empty -> 
-            checkLineFull(Board, NextRow_, Col_)
-            ; checkLineFull(NextRow_, 1)
-        )
-        
-        ; 
 
-        NextCol_ is Col_ + 1,
+        getPeca(row, col, Board, endpeca),
+        
         (
-            NextCol_ == 8 ->
+            endpeca \= empty ->
+            nextrow is row + 1,
+            checkColFull(Board, nextrow, col)
+            ; write('hey')
+        )
+    ).
+
+checkRowFull(Board, row, col):-
+    (
+        (
+            nextcol == 8 ->
             nl,
             write('=======================\n'),
             write('===    GAME OVER    ===\n'),
             write('=======================\n'),
-            true,
+            % true,
             menu
             ; write('')
         ),
-        getPeca(Row_, NextCol_, Board, EndPeca_),
+        getPeca(row, col, Board, endpeca),
         (
-            EndPeca_ \= empty -> 
-            checkLineFull(Board, Row_, NextCol_)
-            ; checkLineFull(NextCol_, 1)
+            endpeca \= empty -> 
+            nextcol is col + 1,
+            checkRowFull(Board, row, nextcol)
+            ; write('hey')
         )        
     ).
 
