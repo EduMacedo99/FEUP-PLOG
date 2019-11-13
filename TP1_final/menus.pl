@@ -18,6 +18,7 @@ manageInput(1) :-
 
 manageInput(2) :-
     menu.
+    game2('P', 'C').
 
 displayMenu :-
     nl,nl,
