@@ -17,7 +17,6 @@ manageInput(1) :-
     write('Thanks for playing!\n').
 
 manageInput(2) :-
-    menu.
     game2('P', 'C').
 
 displayMenu :-

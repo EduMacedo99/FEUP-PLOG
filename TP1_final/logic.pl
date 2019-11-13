@@ -4,9 +4,8 @@ game(Player1, Player2) :-
       mainLoop(Board),
       write('ok\n').
 
-%TO DO -> EVITAR EMPURRAR PARA FORA DO TABULEIRO
 
-game(Player1, CPU) :-
+game2(Player1, CPU) :-
       tabuleiroInicial(Board), 
       display_game(Board),
       mainLoop2(Board),
@@ -24,38 +23,24 @@ mainLoop(Board):-
 
     mainLoop(FinalBoard).
 
+
+
 mainLoop2(Board):-
     write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
 
     write('> Black Player\'s turn...\n'),
-        moveBlackCPU(NewBoard, FinalBoard),
+        findall([R,C,N], findall_aux(Board, R, C, N, black), ListOfOutputs),
+        write('\n\n'),
+        write(ListOfOutputs),
+        write('\n\n'),
+        nth1(1, ListOfOutputs, Elem),
+        generateMove(Elem, NewBoard, FinalBoard),
         display_game(FinalBoard),
 
-    mainLoop(FinalBoard).
-
-
-moveBlackCPU(Board, NewBoard):-
-    findall(Output,
-            findMove(black , Board, Output),
-            ListOfOutputs).
-
-findMove(Type, Board, Output):-
-
-    findMoveTop(Type, Board, 0, 1);
-    findMoveBottom(Type, Board, Row, Column).
-
-findMoveTop(Type, Board, Row, Column):-
-    NewRow is Row +1,
-    NewColumn is Column +1,
-    getPeca(NewRow, NewColumn, Board, Peca).
-    % (
-    %     Peca == Type ->
-         
-    % ),
+     mainLoop2(FinalBoard).
     
-
 
 checkGameOverTop(Board, RowIndex, ColIndex):-
     NextColIndex is ColIndex + 1,
@@ -184,35 +169,103 @@ setColuna(N, Peca, [X | Resto], [X | Mais]):-
     setColuna(Next, Peca, Resto, Mais).
 
 
-
-
-
-
-whiteTurn(Board, NewBoard, Row, Column):-
+checkValidPlay(Player, Board, Row, Column, Number):-
     getPeca(Row, Column, Board, Peca),
-    checkWhiteCoord(Row, Column, Board, Peca),
-    askBlocks(Number),
+    checkCoord(Player, Row, Column, Board, Peca),
     (
         (
-            write('CAL CRL1\n'),
             Column == 1,
-            checkValidStepRight(Row, 1, Board, Number, 0),
+            checkValidStepRight(Row, 1, Board, Number, 0)
+        );
+        (
+            Column == 8,
+            checkValidStepLeft(Row, 8, Board, Number, 0)
+        );
+        (
+            Row == 1,
+            checkValidStepDown(1, Column, Board, Number, 0)
+        );
+        (
+            Row == 8,
+            checkValidStepUp(8, Column, Board, Number, 0)
+        )
+    ).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIND ALL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+findall_aux(Board, RowOut, ColOut, Number, Player) :-
+    findall_aux_right(Board, 2, 8, 1, Player, RowOut, ColOut, Number).
+
+findall_aux_right(Board, R, C, N, Player, RowOut, ColOut, NumOut) :-
+     !,
+    R < 8,
+    (
+        (
+            checkValidPlay(Player, Board, R, C, N),
+            RowOut is R,
+            ColOut is C,
+            NumOut is N
+        );
+        (
+            (
+                N > 5,
+                NewR is R + 1, !, 
+                findall_aux_right(Board, NewR, C, 1, Player, RowOut, ColOut, NumOut)
+            );
+            (
+                NewN is N + 1, !, 
+                findall_aux_right(Board, R, C, NewN, Player, RowOut, ColOut, NumOut)
+            )
+        )
+    ).
+
+findall_aux_left(Board, R, C, N, Player, RowOut, ColOut, NumOut) :-
+    !,
+    R < 8,
+    (
+        (
+            checkValidPlay(Player, Board, R, C, N),
+            RowOut is R,
+            ColOut is C,
+            NumOut is N
+        );
+        (
+            (
+                N > 5,
+                NewR is R + 1, !, 
+                findall_aux_left(Board, NewR, C, 1, Player, RowOut, ColOut, NumOut)
+            );
+            (
+                NewN is N + 1, !, 
+                findall_aux_left(Board, R, C, NewN, Player, RowOut, ColOut, NumOut)
+            )
+        )
+    ).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIND ALL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+whiteTurn(Board, NewBoard, Row, Column, Number):-
+    checkValidPlay(white, Board, Row, Column, Number),
+    getPeca(Row, Column, Board, Peca),
+    (
+        (
+            Column == 1,
             makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
         );
         (
-            write('CAL CRL2\n'),
             Column == 8,
-            checkValidStepLeft(Row, 8, Board, Number, 0),
             makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
         );
         (
             Row == 1,
-            %
             makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
         );
         (
             Row == 8,
-            %
             makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
         )
     ).
@@ -224,46 +277,41 @@ askCoordsWhite(Board, NewBoard):-
     askRow(NewRow),
     nl,
     askColumn(NewColumn),
-    whiteTurn(Board, NewBoard, NewRow, NewColumn).
+    askBlocks(Number),
+    whiteTurn(Board, NewBoard, NewRow, NewColumn, Number).
 
 askCoordsWhite(Board, NewBoard):-
     askCoordsWhite(Board, NewBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%
-blackTurn(Board, NewBoard, Row, Column):-
+blackTurn(Board, NewBoard, Row, Column, Number):-
+    checkValidPlay(black, Board, Row, Column, Number),
     getPeca(Row, Column, Board, Peca),
-    checkBlackCoord(Row, Column, Board, Peca),
-    askBlocks(Number),
     (
-        Column == 1 ->
-        checkValidStepRight(Row, 1, Board, Number, 0),
-        makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
-        ; write('')
-    ),
-    (
-        Column == 8 ->
-        checkValidStepLeft(Row, 8, Board, Number, 0),
-        makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
-        ; write('')
-    ),
-    (
-        Row == 1 ->
-        makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
-        ; write('')
-    ),
-    (
-        Row == 8 ->
-        makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
-        ; write('')
+        (
+            Column == 1,
+            makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
+        );
+        (
+            Column == 8,
+            makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
+        );
+        (
+            Row == 1,
+            makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
+        );
+        (
+            Row == 8,
+            makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
+        )
     ).
 
 askCoordsBlack(Board, NewBoard):-
     askRow(NewRow),
-    % verificar se ha peca black nesta row
     nl,
     askColumn(NewColumn),
-    % verificar se ha peca black nesta column
-    blackTurn(Board, NewBoard, NewRow, NewColumn).
+    askBlocks(Number),
+    blackTurn(Board, NewBoard, NewRow, NewColumn, Number).
 
 askCoordsBlack(Board, NewBoard):-
     askCoordsBlack(Board, NewBoard).
@@ -425,8 +473,7 @@ pushDown(Row, Column, Board, Peca, TempBoard):-
     ).
 
 checkValidStepRight(Row, Column, Board, Steps, Counter) :-
-    (Column == 7,
-    fail);
+    Column < 7,
     NextColumn is Column + 1,
     getPeca(Row, NextColumn, Board, Peca),
     (
@@ -440,8 +487,7 @@ checkValidStepRight(Row, Column, Board, Steps, Counter) :-
     \+ (Steps > 6 - Counter).
 
 checkValidStepLeft(Row, Column, Board, Steps, Counter) :-
-    (Column == 1,
-    fail);
+    Column > 1,
     NextColumn is Column - 1,
     getPeca(Row, NextColumn, Board, Peca),
     (
@@ -455,8 +501,7 @@ checkValidStepLeft(Row, Column, Board, Steps, Counter) :-
     \+ (Steps > 6 - Counter).
 
 checkValidStepDown(Row, Column, Board, Steps, Counter) :-
-    (Row == 1,
-    fail);
+    Row > 1,
     NextRow is Row - 1,
     getPeca(NextRow, Column, Board, Peca),
     (
@@ -470,8 +515,7 @@ checkValidStepDown(Row, Column, Board, Steps, Counter) :-
     \+ (Steps > 6 - Counter).
 
 checkValidStepUp(Row, Column, Board, Steps, Counter) :-
-    (Row == 1,
-    fail);
+    Row < 7,
     NextRow is Row + 1,
     getPeca(NextRow, Column, Board, Peca),
     (
@@ -483,3 +527,30 @@ checkValidStepUp(Row, Column, Board, Steps, Counter) :-
 
 checkValidStepUp(Row, Column, Board, Steps, Counter) :-
     \+ (Steps > 6 - Counter).
+
+generateMove(Elem, Board, NewBoard):-
+    nth1(1, Elem, Row),
+    nth1(2, Elem, Column),
+    nth1(3, Elem, Number),
+    getPeca(Row, Column, Board, Peca),
+    (
+        (
+            Column == 1,
+            makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
+        );
+        (
+            Column == 8,
+            makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
+        );
+        (
+            Row == 1,
+            makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
+        );
+        (
+            Row == 8,
+            makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
+        )
+    ).
+
+
+

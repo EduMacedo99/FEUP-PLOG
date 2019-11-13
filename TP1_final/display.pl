@@ -62,7 +62,7 @@ imprimeTabuleiro([Head|Tail], Number) :-
     Number1 is Number + 1,
     write(' |'),
     imprimeLinha(Head),
-    write('\n---|---|---|---|---|---|---|---|---\n'),
+    write('\n---|---|---|---|---|---|---|---|---|\n'),
     imprimeTabuleiro(Tail, Number1).
 
 imprimeLinha([]).

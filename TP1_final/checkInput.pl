@@ -37,21 +37,20 @@ checkColumn(_Column, _NewColumn):-
     write('Invalid Column!\n> Choose a new position!\n'),
     fail.
 
-checkWhiteCoord(Row, Column, Board, Peca):-
+checkCoord(Player, Row, Column, Board, Peca):-
     getPeca(Row, Column, Board, Peca),
-    (   Peca \= white ->
-    write('not white!\n'),
+    (   Peca \= Player ->
     fail
-    ;   write('Valid answer1!\n')
+    ;   write('')
     ).
 
-checkBlackCoord(Row, Column, Board, Peca):-
-    getPeca(Row, Column, Board, Peca),
-    (   Peca \= black ->
-    write('not black!\n'), 
-    fail
-    ;   write('Valid answer2!\n')
-    ).
+% checkBlackCoord(Row, Column, Board, Peca):-
+%     getPeca(Row, Column, Board, Peca),
+%     (   Peca \= black ->
+%     write('not black!\n'), 
+%     fail
+%     ;   write('Valid answer2!\n')
+%     ).
 
 
 askBlocks(Number):-
