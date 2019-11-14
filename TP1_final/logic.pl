@@ -6,10 +6,10 @@ game(Player1, Player2) :-
 
 %TO DO -> EVITAR EMPURRAR PARA FORA DO TABULEIRO
 
-game(Player1, CPU) :-
+game2(Player1, CPU) :-
       tabuleiroInicial(Board), 
       display_game(Board),
-      mainLoop2(Board),
+      mainLoop(Board),
       write('ok\n').
 
 
@@ -30,7 +30,7 @@ mainLoop(Board):-
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
 
-    checkGameOver(Board);
+    checkGameOver(NewBoard);
     (write('> Black Player\'s turn...\n'),
         askCoordsBlack(NewBoard, FinalBoard),
         display_game(FinalBoard),
@@ -125,33 +125,33 @@ checkGameOverLeft(Board, RowIndex, ColIndex):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 checkColFullDown(_, 8, _).
-checkColFullDown(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextrow is row + 1,
-    checkColFull(Board, nextrow, col).
+checkColFullDown(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextrow is Row + 1,
+    checkColFullDown(Board, Nextrow, Col).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 checkColFullUp(_, 1, _).
-checkColFullUp(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextrow is row - 1,
-    checkColFull(Board, nextrow, col).
+checkColFullUp(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextrow is Row - 1,
+    checkColFullUp(Board, Nextrow, Col).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 checkRowFullRight(_, _, 8).
-checkRowFullRight(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextcol is col + 1,
-    checkRowFull(Board, row, nextcol).
+checkRowFullRight(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextcol is Col + 1,
+    checkRowFullRight(Board, Row, Nextcol).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 checkRowFullLeft(_, _, 1).
-checkRowFullLeft(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextcol is col - 1,
-    checkRowFull(Board, row, nextcol).
+checkRowFullLeft(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextcol is Col - 1,
+    checkRowFullLeft(Board, Row, Nextcol).
 
 getPeca(NLinha, NColuna, Board, Peca):-
     nth1(NLinha, Board, Coluna),
