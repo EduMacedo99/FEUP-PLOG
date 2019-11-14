@@ -25,6 +25,7 @@ game_over(Board) :-
      game_over(Board);
         findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
         length(ListOfOutputs, Size1),
+
          (  Size1 \= 0 ->
                 write('> White Player\'s turn...\n'),
                 askCoordsWhite(Board, NewBoard),
@@ -52,6 +53,7 @@ game_over(Board) :-
      game_over(Board);
      findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
         length(ListOfOutputs, Size1),
+
          (  Size1 \= 0 ->
                 
                 write('> White Player\'s turn...\n'),
@@ -65,6 +67,7 @@ game_over(Board) :-
      
     findall([R2,C2,N2], findall_aux(NewBoard, R2, C2, N2, black), ListOfOutputs2),
          length(ListOfOutputs2, Size2),
+
           ( Size2 \= 0 ->
 
                 write('> Black Player\'s turn...\n'),
@@ -594,7 +597,12 @@ checkValidStepUp(Row, Column, Board, Steps, Counter) :-
 
 generateMove(ListOfOutputs, Board, NewBoard):-
     length(ListOfOutputs, Size),
-    random(1, Size, R),
+    (
+        Size == 1 ->        %%avoid random(1, 1, R)
+        R is 1
+        ;
+        random(1, Size, R)
+    ),
     nth1(R, ListOfOutputs, Elem),
     nl,
     write(Elem),
