@@ -32,6 +32,18 @@ tabuleiroFinal2([
     [null, empty, empty, empty, black, white, empty, null]
     ]).    
     
+
+tabuleiroFinal3([
+    [null, empty, empty, empty, empty, black, empty, null],
+    [black, empty, empty, black, black, black, white, empty],
+    [empty, empty, white, empty, white, white, black, empty],
+    [empty, black, black, black, black, black, white, white],
+    [black, empty, empty, empty, white, black, white, empty],
+    [empty, black, white, empty, white, white, white, empty],
+    [empty, empty, empty, empty, black, empty, empty, empty],
+    [null, empty, empty, empty, black, white, empty, null]
+    ]).
+
 pos(0,'a').    
 pos(1,'b').
 pos(2,'c').

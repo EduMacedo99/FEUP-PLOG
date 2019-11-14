@@ -1,12 +1,11 @@
 game(Player1, Player2) :-
-      tabuleiroFinal2(Board),
+      tabuleiroInicial(Board),
       display_game(Board),
       mainLoop(Board).
-      %write('ok\n').
 
 
 game2(Player1, CPU) :-
-      tabuleiroFinal2(Board), 
+      tabuleiroInicial(Board),
       display_game(Board),
       mainLoop2(Board).
 
@@ -20,35 +19,62 @@ game_over(Board) :-
     write('=====    GAME OVER    =====\n'),
     write('===========================\n'). 
 
-mainLoop(Board):-
-    game_over(Board);
-    (write('> White Player\'s turn...\n'),
-        askCoordsWhite(Board, NewBoard),
-        display_game(NewBoard),
 
-    game_over(NewBoard);
-    (write('> Black Player\'s turn...\n'),
-        askCoordsBlack(NewBoard, FinalBoard),
-        display_game(FinalBoard),
+ mainLoop(Board):-
+     game_over(Board);
+        findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
+        length(ListOfOutputs, Size1),
+         (  Size1 \= 0 ->
+                write('> White Player\'s turn...\n'),
+                askCoordsWhite(Board, NewBoard),
+                display_game(NewBoard)
+                ;
+                write('No valid plays for white player...\n'),
+                copy(Board, NewBoard)
+         ),
 
-    mainLoop(FinalBoard))).
+         findall([R2,C2,N2], findall_aux(NewBoard, R2, C2, N2, black), ListOfOutputs2),
+         length(ListOfOutputs2, Size2),
+         (
+            Size2 \= 0 ->
+            write('> Black Player\'s turn...\n'),
+            askCoordsBlack(NewBoard, FinalBoard),
+            display_game(FinalBoard)
+            ;
+            write('No valid plays...\n'),
+            copy(NewBoard, FinalBoard)
+         ),
 
+     mainLoop(FinalBoard).
 
+ mainLoop2(Board):-
+     game_over(Board);
+     findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
+        length(ListOfOutputs, Size1),
+         (  Size1 \= 0 ->
+                
+                write('> White Player\'s turn...\n'),
+                askCoordsWhite(Board, NewBoard),
+                display_game(NewBoard)
+                ;
+                write('No valid plays for white player...\n'),
+                copy(Board, NewBoard)
+         ),
 
-mainLoop2(Board):-
-    game_over(Board);
-    (write('> White Player\'s turn...\n'),
-        askCoordsWhite(Board, NewBoard),
-        display_game(NewBoard),
+     
+    findall([R2,C2,N2], findall_aux(NewBoard, R2, C2, N2, black), ListOfOutputs2),
+         length(ListOfOutputs2, Size2),
+          ( Size2 \= 0 ->
 
-    game_over(NewBoard);
-    (write('> Black Player\'s turn...\n'),
-        findall([R,C,N], findall_aux(Board, R, C, N, black), ListOfOutputs),
-        generateMove(ListOfOutputs, NewBoard, FinalBoard),
-        display_game(FinalBoard),
+                write('> Black Player\'s turn...\n'),
+                generateMove(ListOfOutputs2, NewBoard, FinalBoard),
+                display_game(FinalBoard)
+                ;
+                write('No valid plays...\n'),
+                copy(NewBoard, FinalBoard)
+         ),
 
-     mainLoop2(FinalBoard))).
-    
+     mainLoop2(FinalBoard).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
