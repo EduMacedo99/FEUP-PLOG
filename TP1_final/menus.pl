@@ -7,19 +7,24 @@ menu :-
 
 
 manageInput(0) :-
-    nl,
-    write('Leaving'),
-    nl.
+    write('\nExiting FUSE\n').
 
 manageInput(1) :-
-    write('Starting game ...\n'),
+    write('Starting Player(W) vs Player(B) game\n'),
     game('P','P'),
-    write('Thanks for playing!\n').
+    write('\n| Thanks for playing FUSE |\n\n').
 
 manageInput(2) :-
-    write('Starting PvCPU game ...\n'),
+    write('Starting Player(W) vs CPU(B) game\n'),
     game2('P', 'C'),
-    write('Thanks for playing!\n').
+    write('\n| Thanks for playing FUSE |\n\n').
+
+manageInput(3) :-
+    write('Starting CPU(W) vs Player(B) game\n'),
+    game2('C', 'P'),
+    write('\n| Thanks for playing FUSE |\n\n').
+
+
 
 displayMenu :-
     nl,nl,
@@ -34,11 +39,12 @@ displayMenu :-
     write('|        ##        ##     ##  ##    ##  ##              |'),nl,
     write('|        ##         #######    ######   ########        |'),nl,
     write('|                                                       |'),nl,
-    write('|                      1 -> P v P                       |'),nl,
-    write('|                      2 -> P v CPU                     |'),nl,
-    write('|                      3 -> P v CPU                     |'),nl,
-    write('|                      0 -> Exit                        |'),nl,
+    write('|                      [1] P v P                        |'),nl,
+    write('|                      [2] P v CPU                      |'),nl,
+    write('|                      [3] CPU v P                      |'),nl,
+    write('|                      [4] CPU v CPU                    |'),nl,
     write('|                                                       |'),nl,
+    write('|                      [0] Exit                         |'),nl,
     write('|_______________________________________________________|'),nl
     ,nl.
 

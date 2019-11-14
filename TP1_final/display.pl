@@ -28,8 +28,8 @@ tabuleiroFinal2([
     [empty, black, black, black, black, black, white, white],
     [empty, empty, empty, empty, white, black, white, empty],
     [empty, black, white, empty, white, white, white, empty],
-    [empty, empty, empty, empty, black, white, empty, empty],
-    [null, empty, empty, empty, black, empty, empty, null]
+    [empty, empty, empty, empty, black, empty, empty, empty],
+    [null, empty, empty, empty, black, white, empty, null]
     ]).    
     
 pos(0,'a').    

@@ -1,35 +1,32 @@
 game(Player1, Player2) :-
-      tabuleiroInicial(Board),
+      tabuleiroFinal2(Board),
       display_game(Board),
-      mainLoop(Board),
-      write('ok\n').
+      mainLoop(Board).
+      %write('ok\n').
 
 
 game2(Player1, CPU) :-
-      tabuleiroInicial(Board), 
+      tabuleiroFinal2(Board), 
       display_game(Board),
-      mainLoop2(Board),
-      write('ok\n').
+      mainLoop2(Board).
 
 
-checkGameOver(Board) :-
+game_over(Board) :-
     checkGameOverTop(Board, 1, 1), %check row 1 between 2 and 7
     checkGameOverRight(Board, 1, 8),
     checkGameOverBottom(Board, 8, 1), 
     checkGameOverLeft(Board, 1, 1),
-    write('=======================\n'),
-    write('===    GAME OVER    ===\n'),
-    write('=======================\n'). 
-
-    % game over
+    write('===========================\n'),
+    write('=====    GAME OVER    =====\n'),
+    write('===========================\n'). 
 
 mainLoop(Board):-
-    checkGameOver(Board);
+    game_over(Board);
     (write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
 
-    checkGameOver(NewBoard);
+    game_over(NewBoard);
     (write('> Black Player\'s turn...\n'),
         askCoordsBlack(NewBoard, FinalBoard),
         display_game(FinalBoard),
@@ -39,16 +36,18 @@ mainLoop(Board):-
 
 
 mainLoop2(Board):-
-    write('> White Player\'s turn...\n'),
+    game_over(Board);
+    (write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
 
-    write('> Black Player\'s turn...\n'),
+    game_over(NewBoard);
+    (write('> Black Player\'s turn...\n'),
         findall([R,C,N], findall_aux(Board, R, C, N, black), ListOfOutputs),
         generateMove(ListOfOutputs, NewBoard, FinalBoard),
         display_game(FinalBoard),
 
-     mainLoop2(FinalBoard).
+     mainLoop2(FinalBoard))).
     
 
 
@@ -130,7 +129,6 @@ checkRowFullLeft(Board, Row, Col):-
     Endpeca \= empty,
     Nextcol is Col - 1,
     checkRowFullLeft(Board, Row, Nextcol).
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
