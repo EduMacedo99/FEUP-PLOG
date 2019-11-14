@@ -54,5 +54,5 @@ checkCoord(Player, Row, Column, Board, Peca):-
 
 
 askBlocks(Number):-
-    write('\nHow many blocks do you wish to move?'),
+    write('\nHow many blocks do you wish to move?\n'),
     read(Number).

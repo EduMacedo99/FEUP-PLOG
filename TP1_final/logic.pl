@@ -1,14 +1,14 @@
 game(Player1, Player2) :-
       tabuleiroFinal2(Board),
       display_game(Board),
-      mainLoop(Board).
-      %write('ok\n').
-
+      mainLoop(Board),
+      menu.
 
 game2(Player1, CPU) :-
       tabuleiroFinal2(Board), 
       display_game(Board),
-      mainLoop2(Board).
+      mainLoop2(Board),
+      menu.
 
 
 game_over(Board) :-
