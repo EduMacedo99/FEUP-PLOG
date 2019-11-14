@@ -7,7 +7,8 @@ game(Player1, Player2) :-
 game2(Player1, CPU) :-
       tabuleiroInicial(Board),
       display_game(Board),
-      mainLoop2(Board).
+      mainLoop2(Board),
+      goToMenu(Input).
 
 
 game_over(Board) :-
@@ -17,7 +18,7 @@ game_over(Board) :-
     checkGameOverLeft(Board, 1, 1),
     write('===========================\n'),
     write('=====    GAME OVER    =====\n'),
-    write('===========================\n'). 
+    write('===========================\n').
 
 
  mainLoop(Board):-
