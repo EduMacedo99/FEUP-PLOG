@@ -5,21 +5,31 @@ menu :-
     read(Input),
     manageInput(Input).
 
+goToMenu(Input):-
+    write('\nPress [0] to go back to MAIN MENU.\n\n'),
+    read(Input),
+    travelBack(Input).
+
+travelBack(0):-
+    menu.
 
 manageInput(0) :-
-    write('\nExiting FUSE\n').
+    write('\nExiting FUSE').
 
 manageInput(1) :-
+    write('\33\[2J'),
     write('Starting Player(W) vs Player(B) game\n'),
     game('P','P'),
     write('\n| Thanks for playing FUSE |\n\n').
 
 manageInput(2) :-
+    write('\33\[2J'),
     write('Starting Player(W) vs CPU(B) game\n'),
     game2('P', 'C'),
     write('\n| Thanks for playing FUSE |\n\n').
 
 manageInput(3) :-
+    write('\33\[2J'),
     write('Starting CPU(W) vs Player(B) game\n'),
     game2('C', 'P'),
     write('\n| Thanks for playing FUSE |\n\n').
@@ -28,6 +38,7 @@ manageInput(3) :-
 
 displayMenu :-
     nl,nl,
+    write('\33\[2J'), %clear screen and display menu
     write(' _______________________________________________________ '),nl,
     write('|                                                       |'),nl,
     write('|        ########  ##     ##   ######   ########        |'),nl,
@@ -39,10 +50,10 @@ displayMenu :-
     write('|        ##         #######    ######   ########        |'),nl,
     write('|_______________________________________________________|'),nl,
     write('|                                                       |'),nl,
-    write('|                     [1] P v P                         |'),nl,
-    write('|                     [2] P v CPU                       |'),nl,
-    write('|                     [3] CPU v P                       |'),nl,
-    write('|                     [4] CPU v CPU                     |'),nl,
+    write('|                     [1]  P  vs  P                     |'),nl,
+    write('|                     [2]  P  vs CPU                    |'),nl,
+    write('|                     [3] CPU vs  P                     |'),nl,
+    write('|                     [4] CPU vs CPU                    |'),nl,
     write('|                     [0] Exit                          |'),nl,
     write('|_______________________________________________________|'),nl,nl.
 

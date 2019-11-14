@@ -1,14 +1,14 @@
 game(Player1, Player2) :-
-      tabuleiroFinal2(Board),
+      tabuleiroInicial(Board),
       display_game(Board),
       mainLoop(Board),
-      menu.
+      goToMenu(Input).
 
 game2(Player1, CPU) :-
-      tabuleiroFinal2(Board), 
+      empty(Board), 
       display_game(Board),
       mainLoop2(Board),
-      menu.
+      goToMenu(Input).
 
 
 game_over(Board) :-
@@ -18,35 +18,34 @@ game_over(Board) :-
     checkGameOverLeft(Board, 1, 1),
     write('===========================\n'),
     write('=====    GAME OVER    =====\n'),
-    write('===========================\n'). 
+    write('===========================\n').
 
 mainLoop(Board):-
-    game_over(Board);
-    (write('> White Player\'s turn...\n'),
+    % game_over(Board);
+        write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
+        write('\33\[2J'),
         display_game(NewBoard),
-
-    game_over(NewBoard);
-    (write('> Black Player\'s turn...\n'),
+    % game_over(NewBoard);
+        write('> Black Player\'s turn...\n'),
         askCoordsBlack(NewBoard, FinalBoard),
+        write('\33\[2J'),
         display_game(FinalBoard),
-
-    mainLoop(FinalBoard))).
+    mainLoop(FinalBoard).
 
 
 
 mainLoop2(Board):-
-    game_over(Board);
-    (write('> White Player\'s turn...\n'),
+    % game_over(Board);
+        (write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
+        write('\33\[2J'),
         display_game(NewBoard),
-
-    game_over(NewBoard);
-    (write('> Black Player\'s turn...\n'),
+    % game_over(NewBoard);
+        (write('> Black Player\'s turn...\n'),
         findall([R,C,N], findall_aux(Board, R, C, N, black), ListOfOutputs),
         generateMove(ListOfOutputs, NewBoard, FinalBoard),
         display_game(FinalBoard),
-
      mainLoop2(FinalBoard))).
     
 
