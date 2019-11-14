@@ -25,16 +25,16 @@ checkGameOver(Board) :-
 
 mainLoop(Board):-
     checkGameOver(Board);
-    write('> White Player\'s turn...\n'),
+    (write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
 
     checkGameOver(NewBoard);
-    write('> Black Player\'s turn...\n'),
+    (write('> Black Player\'s turn...\n'),
         askCoordsBlack(NewBoard, FinalBoard),
         display_game(FinalBoard),
 
-    mainLoop(FinalBoard).
+    mainLoop(FinalBoard))).
 
 
 
@@ -52,7 +52,7 @@ mainLoop2(Board):-
     
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 checkGameOverTop(_, _, 7).
 checkGameOverTop(Board, RowIndex, ColIndex):-
     NextColIndex is ColIndex + 1,
@@ -105,35 +105,34 @@ checkGameOverLeft(Board, RowIndex, ColIndex):-
     EndPeca == empty,
     checkGameOverLeft(Board, NextRowIndex, ColIndex).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 checkColFullDown(_, 8, _).
-checkColFullDown(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextrow is row + 1,
-    checkColFull(Board, nextrow, col).
+checkColFullDown(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextrow is Row + 1,
+    checkColFullDown(Board, Nextrow, Col).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 checkColFullUp(_, 1, _).
-checkColFullUp(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextrow is row - 1,
-    checkColFull(Board, nextrow, col).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkColFullUp(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextrow is Row - 1,
+    checkColFullUp(Board, Nextrow, Col).
 checkRowFullRight(_, _, 8).
-checkRowFullRight(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextcol is col + 1,
-    checkRowFull(Board, row, nextcol).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkRowFullRight(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextcol is Col + 1,
+    checkRowFullRight(Board, Row, Nextcol).
 checkRowFullLeft(_, _, 1).
-checkRowFullLeft(Board, row, col):-
-    getPeca(row, col, Board, endpeca),
-    endpeca \= empty,
-    nextcol is col - 1,
-    checkRowFull(Board, row, nextcol).
+checkRowFullLeft(Board, Row, Col):-
+    getPeca(Row, Col, Board, Endpeca),
+    Endpeca \= empty,
+    Nextcol is Col - 1,
+    checkRowFullLeft(Board, Row, Nextcol).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 getPeca(NLinha, NColuna, Board, Peca):-
     nth1(NLinha, Board, Coluna),
@@ -580,7 +579,8 @@ generateMove(ListOfOutputs, Board, NewBoard):-
     nth1(3, Elem, Number),
     getPeca(Row, Column, Board, Peca),
     checkValidPlay(Peca, Board, Row, Column, Number),
-    write('Black Player chose:\nRow: '), write(Row), nl,
+    checkRow(X, Row),
+    write('Black Player chose:\nRow: '), write(X), nl,
     write('Column: '), write(Column), nl,
     write('Blocks: '), write(Number), nl,
     (

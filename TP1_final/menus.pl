@@ -17,7 +17,9 @@ manageInput(1) :-
     write('Thanks for playing!\n').
 
 manageInput(2) :-
-    game2('P', 'C').
+    write('Starting PvCPU game ...\n'),
+    game2('P', 'C'),
+    write('Thanks for playing!\n').
 
 displayMenu :-
     nl,nl,
