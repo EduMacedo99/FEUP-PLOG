@@ -1,5 +1,5 @@
 game(Player1, Player2) :-
-      tabuleiroInicial(Board), 
+      tabuleiroInicial(Board),
       display_game(Board),
       mainLoop(Board),
       write('ok\n').
@@ -12,11 +12,24 @@ game2(Player1, CPU) :-
       write('ok\n').
 
 
+checkGameOver(Board) :-
+    checkGameOverTop(Board, 1, 1), %check row 1 between 2 and 7
+    checkGameOverRight(Board, 1, 8),
+    checkGameOverBottom(Board, 8, 1), 
+    checkGameOverLeft(Board, 1, 1),
+    write('=======================\n'),
+    write('===    GAME OVER    ===\n'),
+    write('=======================\n'). 
+
+    % game over
+
 mainLoop(Board):-
+    checkGameOver(Board);
     write('> White Player\'s turn...\n'),
         askCoordsWhite(Board, NewBoard),
         display_game(NewBoard),
 
+    checkGameOver(NewBoard);
     write('> Black Player\'s turn...\n'),
         askCoordsBlack(NewBoard, FinalBoard),
         display_game(FinalBoard),
@@ -38,109 +51,89 @@ mainLoop2(Board):-
      mainLoop2(FinalBoard).
     
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkGameOverTop(_, _, 7).
 checkGameOverTop(Board, RowIndex, ColIndex):-
     NextColIndex is ColIndex + 1,
-    (
-        NextColIndex == 8 ->
-        checkGameOverRight(Board, 1, 1)
-        ; write('')
-    ),
     getPeca(RowIndex, NextColIndex, Board, EndPeca),
-    (
-        EndPeca == empty -> 
-        checkGameOverTop(Board, RowIndex, NextColIndex)
-        ; checkColFull(Board, 2, NextColIndex)
-    ).
+    EndPeca == empty,
+    checkGameOverTop(Board, RowIndex, NextColIndex).
+checkGameOverTop(Board, RowIndex, ColIndex):-
+    NextColIndex is ColIndex + 1,
+    getPeca(RowIndex, NextColIndex, Board, EndPeca),
+    EndPeca \= empty,
+    checkColFullDown(Board, 2, NextColIndex),
+    checkGameOverTop(Board, RowIndex, NextColIndex).
 
+checkGameOverRight(_, 7, _).
 checkGameOverRight(Board, RowIndex, ColIndex):-
     NextRowIndex is RowIndex + 1,
-    (
-        NextRowIndex == 8 ->
-        checkGameOverBottom(Board, 1, 1)
-        ; write('')
-    ),
     getPeca(NextRowIndex, ColIndex, Board, EndPeca),
-    (
-        EndPeca == empty -> 
-        checkGameOverRight(Board, NextRowIndex, ColIndex)
-        ; 
-        checkRowFull(Board, NextRowIndex, 2)
-    ).
+    EndPeca \= empty,
+    checkRowFullLeft(Board, NextRowIndex, 7),
+    checkGameOverRight(Board, NextRowIndex, ColIndex).
+checkGameOverRight(Board, RowIndex, ColIndex):-
+    NextRowIndex is RowIndex + 1,
+    getPeca(NextRowIndex, ColIndex, Board, EndPeca),
+    EndPeca == empty,
+    checkGameOverRight(Board, NextRowIndex, ColIndex).
 
+checkGameOverBottom(_, _, 7).
 checkGameOverBottom(Board, RowIndex, ColIndex):-
     NextColIndex is ColIndex + 1,
-    (
-        NextColIndex == 8 ->
-        checkGameOverLeft(Board, 1, 1)
-        ; write('')
-    ),
     getPeca(RowIndex, NextColIndex, Board, EndPeca),
-    (
-        EndPeca == empty -> 
-        checkGameOverBottom(Board, RowIndex, NextColIndex)
-        ; checkRowFull(Board, 2, NextColIndex)
-    ).
+    EndPeca == empty,
+    checkGameOverBottom(Board, RowIndex, NextColIndex).
+checkGameOverBottom(Board, RowIndex, ColIndex):-
+    NextColIndex is ColIndex + 1,
+    getPeca(RowIndex, NextColIndex, Board, EndPeca),
+    EndPeca \= empty,
+    checkColFullUp(Board, 7, NextColIndex),
+    checkGameOverBottom(Board, RowIndex, NextColIndex).
 
+checkGameOverLeft(_, 7, _).
 checkGameOverLeft(Board, RowIndex, ColIndex):-
     NextRowIndex is RowIndex + 1,
-    (
-        NextRowIndex == 8 ->
-        nl,
-        write('=======================\n'),
-        write('===    GAME OVER    ===\n'),
-        write('=======================\n')
-        ; write('')
-    ),
     getPeca(NextRowIndex, ColIndex, Board, EndPeca),
-    (
-        EndPeca == empty -> 
-        checkGameOverLeft(Board, NextRowIndex, ColIndex)
-        ; checkColFull(Board, NextRowIndex, 2)
-    ).
+    EndPeca \= empty,
+    checkRowFullRight(Board, NextRowIndex, 2),
+    checkGameOverLeft(Board, NextRowIndex, ColIndex).
+checkGameOverLeft(Board, RowIndex, ColIndex):-
+    NextRowIndex is RowIndex + 1,
+    getPeca(NextRowIndex, ColIndex, Board, EndPeca),
+    EndPeca == empty,
+    checkGameOverLeft(Board, NextRowIndex, ColIndex).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkColFullDown(_, 8, _).
+checkColFullDown(Board, row, col):-
+    getPeca(row, col, Board, endpeca),
+    endpeca \= empty,
+    nextrow is row + 1,
+    checkColFull(Board, nextrow, col).
 
-checkColFull(Board, row, col):-
-    (
-        (
-            row == 8 ->
-            nl,
-            write('=======================\n'),
-            write('===    GAME OVER    ===\n'),
-            write('=======================\n')
-            ; write('')
-        ),
-
-        getPeca(row, col, Board, endpeca),
-        
-        (
-            endpeca \= empty ->
-            nextrow is row + 1,
-            checkColFull(Board, nextrow, col)
-            ; write('hey')
-        )
-    ).
-
-checkRowFull(Board, row, col):-
-    (
-        (
-            nextcol == 8 ->
-            nl,
-            write('=======================\n'),
-            write('===    GAME OVER    ===\n'),
-            write('=======================\n')
-            ; write('')
-        ),
-        getPeca(row, col, Board, endpeca),
-        (
-            endpeca \= empty -> 
-            nextcol is col + 1,
-            checkRowFull(Board, row, nextcol)
-            ; write('hey')
-        )        
-    ).
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkColFullUp(_, 1, _).
+checkColFullUp(Board, row, col):-
+    getPeca(row, col, Board, endpeca),
+    endpeca \= empty,
+    nextrow is row - 1,
+    checkColFull(Board, nextrow, col).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkRowFullRight(_, _, 8).
+checkRowFullRight(Board, row, col):-
+    getPeca(row, col, Board, endpeca),
+    endpeca \= empty,
+    nextcol is col + 1,
+    checkRowFull(Board, row, nextcol).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkRowFullLeft(_, _, 1).
+checkRowFullLeft(Board, row, col):-
+    getPeca(row, col, Board, endpeca),
+    endpeca \= empty,
+    nextcol is col - 1,
+    checkRowFull(Board, row, nextcol).
 
 getPeca(NLinha, NColuna, Board, Peca):-
     nth1(NLinha, Board, Coluna),
