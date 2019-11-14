@@ -32,11 +32,7 @@ mainLoop2(Board):-
 
     write('> Black Player\'s turn...\n'),
         findall([R,C,N], findall_aux(Board, R, C, N, black), ListOfOutputs),
-        write('\n\n'),
-        write(ListOfOutputs),
-        write('\n\n'),
-        nth1(1, ListOfOutputs, Elem),
-        generateMove(Elem, NewBoard, FinalBoard),
+        generateMove(ListOfOutputs, NewBoard, FinalBoard),
         display_game(FinalBoard),
 
      mainLoop2(FinalBoard).
@@ -196,7 +192,12 @@ checkValidPlay(Player, Board, Row, Column, Number):-
 
 
 findall_aux(Board, RowOut, ColOut, Number, Player) :-
-    findall_aux_right(Board, 2, 8, 1, Player, RowOut, ColOut, Number).
+    findall_aux_right(Board, 2, 8, 1, Player, RowOut, ColOut, Number);
+    findall_aux_left(Board, 2, 1, 1, Player, RowOut, ColOut, Number);
+    findall_aux_top(Board, 1, 2, 1, Player, RowOut, ColOut, Number);
+    findall_aux_down(Board, 8, 2, 1, Player, RowOut, ColOut, Number).
+    
+
 
 findall_aux_right(Board, R, C, N, Player, RowOut, ColOut, NumOut) :-
      !,
@@ -221,25 +222,71 @@ findall_aux_right(Board, R, C, N, Player, RowOut, ColOut, NumOut) :-
         )
     ).
 
-findall_aux_left(Board, R, C, N, Player, RowOut, ColOut, NumOut) :-
+findall_aux_left(Board, R, C, N, Player, RowOut2, ColOut2, NumOut2) :-
     !,
     R < 8,
     (
         (
             checkValidPlay(Player, Board, R, C, N),
-            RowOut is R,
-            ColOut is C,
-            NumOut is N
+            RowOut2 is R,
+            ColOut2 is C,
+            NumOut2 is N
         );
         (
             (
                 N > 5,
                 NewR is R + 1, !, 
-                findall_aux_left(Board, NewR, C, 1, Player, RowOut, ColOut, NumOut)
+                findall_aux_left(Board, NewR, C, 1, Player, RowOut2, ColOut2, NumOut2)
             );
             (
                 NewN is N + 1, !, 
-                findall_aux_left(Board, R, C, NewN, Player, RowOut, ColOut, NumOut)
+                findall_aux_left(Board, R, C, NewN, Player, RowOut2, ColOut2, NumOut2)
+            )
+        )
+    ).
+
+findall_aux_top(Board, R, C, N, Player, RowOut2, ColOut2, NumOut2) :-
+    !,
+    C < 8,
+    (
+        (
+            checkValidPlay(Player, Board, R, C, N),
+            RowOut2 is R,
+            ColOut2 is C,
+            NumOut2 is N
+        );
+        (
+            (
+                N > 5,
+                NewC is C + 1, !, 
+                findall_aux_top(Board, R, NewC, 1, Player, RowOut2, ColOut2, NumOut2)
+            );
+            (
+                NewN is N + 1, !, 
+                findall_aux_top(Board, R, C, NewN, Player, RowOut2, ColOut2, NumOut2)
+            )
+        )
+    ).
+
+findall_aux_down(Board, R, C, N, Player, RowOut2, ColOut2, NumOut2) :-
+    !,
+    C < 8,
+    (
+        (
+            checkValidPlay(Player, Board, R, C, N),
+            RowOut2 is R,
+            ColOut2 is C,
+            NumOut2 is N
+        );
+        (
+            (
+                N > 5,
+                NewC is C - 1, !, 
+                findall_aux_top(Board, R, NewC, 1, Player, RowOut2, ColOut2, NumOut2)
+            );
+            (
+                NewN is N + 1, !, 
+                findall_aux_top(Board, R, C, NewN, Player, RowOut2, ColOut2, NumOut2)
             )
         )
     ).
@@ -477,62 +524,72 @@ checkValidStepRight(Row, Column, Board, Steps, Counter) :-
     NextColumn is Column + 1,
     getPeca(Row, NextColumn, Board, Peca),
     (
-        Peca \= empty,
+        Peca == empty,
         NewCounter is Counter + 1;
         NewCounter is Counter
     ),
     checkValidStepRight(Row, NextColumn, Board, Steps, NewCounter).
 
 checkValidStepRight(Row, Column, Board, Steps, Counter) :-
-    \+ (Steps > 6 - Counter).
+    \+ (Steps > Counter).
 
 checkValidStepLeft(Row, Column, Board, Steps, Counter) :-
-    Column > 1,
+    Column > 2,
     NextColumn is Column - 1,
     getPeca(Row, NextColumn, Board, Peca),
     (
-        Peca \= empty,
+        Peca == empty,
         NewCounter is Counter + 1;
         NewCounter is Counter
     ),
     checkValidStepLeft(Row, NextColumn, Board, Steps, NewCounter).
 
 checkValidStepLeft(Row, Column, Board, Steps, Counter) :-
-    \+ (Steps > 6 - Counter).
+    \+ (Steps > Counter).
 
 checkValidStepDown(Row, Column, Board, Steps, Counter) :-
-    Row > 1,
-    NextRow is Row - 1,
+    Row < 7,
+    NextRow is Row + 1,
     getPeca(NextRow, Column, Board, Peca),
     (
-        Peca \= empty,
+        Peca == empty,
         NewCounter is Counter + 1;
         NewCounter is Counter
     ),
     checkValidStepDown(NextRow, Column, Board, Steps, NewCounter).
 
 checkValidStepDown(Row, Column, Board, Steps, Counter) :-
-    \+ (Steps > 6 - Counter).
+    \+ (Steps > Counter).
 
 checkValidStepUp(Row, Column, Board, Steps, Counter) :-
-    Row < 7,
-    NextRow is Row + 1,
+    Row > 2,
+    NextRow is Row - 1,
     getPeca(NextRow, Column, Board, Peca),
     (
-        Peca \= empty,
+        Peca == empty,
         NewCounter is Counter + 1;
         NewCounter is Counter
     ),
     checkValidStepUp(NextRow, Column, Board, Steps, NewCounter).
 
 checkValidStepUp(Row, Column, Board, Steps, Counter) :-
-    \+ (Steps > 6 - Counter).
+    \+ (Steps >  Counter).
 
-generateMove(Elem, Board, NewBoard):-
+generateMove(ListOfOutputs, Board, NewBoard):-
+    length(ListOfOutputs, Size),
+    random(1, Size, R),
+    nth1(R, ListOfOutputs, Elem),
+    nl,
+    write(Elem),
+    nl,
     nth1(1, Elem, Row),
     nth1(2, Elem, Column),
     nth1(3, Elem, Number),
     getPeca(Row, Column, Board, Peca),
+    checkValidPlay(Peca, Board, Row, Column, Number),
+    write('Black Player chose:\nRow: '), write(Row), nl,
+    write('Column: '), write(Column), nl,
+    write('Blocks: '), write(Number), nl,
     (
         (
             Column == 1,
@@ -552,5 +609,7 @@ generateMove(Elem, Board, NewBoard):-
         )
     ).
 
+generateMove(ListOfOutputs, Board, NewBoard):-
+    generateMove(ListOfOutputs, Board, NewBoard).
 
 
