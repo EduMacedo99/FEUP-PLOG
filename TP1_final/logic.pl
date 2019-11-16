@@ -1,13 +1,14 @@
 game(Player1, Player2) :-
-      tabuleiroInicial(Board),
-      display_game(Board),
-      mainLoop(Board).
+      randomBoard(Board, NewBoard),
+      display_game(NewBoard),
+      mainLoop(NewBoard),
+      goToMenu(Input).
 
 
 game2(Player1, CPU) :-
-      tabuleiroInicial(Board),
-      display_game(Board),
-      mainLoop2(Board),
+      randomBoard(Board, NewBoard),
+      display_game(NewBoard),
+      mainLoop2(NewBoard),
       goToMenu(Input).
 
 
