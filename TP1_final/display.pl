@@ -8,6 +8,18 @@ tabuleiroInicial([
     [white, empty, empty, empty, empty, empty, empty, white],
     [null, white, black, black, white, black, white, null]
     ]).
+emptyList([]).
+
+tabuleiroVazio([
+    [null, empty, empty, empty, empty, empty, empty, null],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [empty, empty, empty, empty, empty, empty, empty, empty],
+    [null, empty, empty, empty, empty, empty, empty, null]
+    ]).
 
 tabuleiroFinal([
     [null, empty, empty, empty, empty, empty, empty, null],
@@ -85,3 +97,283 @@ imprimeLinha([Head|Tail]) :-
     imprimeLinha(Tail).
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GENERATE RANDOM BOARD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+randomBoard(Board, FinalBoard):-
+    tabuleiroVazio(Board),
+    emptyList(Prev),
+    randomTop(Prev, Board, 2, NewBoard),
+    emptyList(Prev1),
+    randomBottom(Prev1, NewBoard, 2, NewBoard2),
+    emptyList(Prev2),
+    randomLeft(Prev2, NewBoard2, 2, NewBoard3),
+    emptyList(Prev3),
+    randomRight(Prev3, NewBoard3, 2, FinalBoard),
+    display_game(FinalBoard).
+
+
+
+
+
+randomTop( _, Board, 8, FinalBoard):-
+    copy(Board, FinalBoard),
+    true.
+
+randomTop(Prev, Board, Pos, FinalBoard):-
+    length(Prev, Size),
+    (
+        Size == 2 ->
+        random(1, 3, R),
+        (
+            R == 1 ->
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , white == Color1 ->
+                fail
+                ;
+                append([white], [Color1], NewPrev),
+                setPeca(1, Pos, white, Board, NewBoard),
+                NewColumn is Pos +1,
+                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+            )
+            ;
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , black == Color1 ->
+                fail
+                ;
+                append([black], [Color1], NewPrev),
+                setPeca(1, Pos, black, Board, NewBoard),
+                NewColumn is Pos +1,
+                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+            )
+
+        )
+
+        ;
+        random(1, 3, R),
+        (
+            R == 1 ->
+            setPeca(1, Pos, white, Board, NewBoard),
+            append([white], Prev, NewPrev),
+            NewColumn is Pos +1,
+            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+            ;
+            setPeca(1, Pos, black, Board, NewBoard),
+            append([black], Prev, NewPrev),
+            NewColumn is Pos +1,
+            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+        )
+    ).
+
+
+
+randomTop(Prev, Board, Pos, FinalBoard):-
+    randomTop(Prev, Board, Pos, FinalBoard).
+
+
+
+
+
+
+
+randomBottom( _, Board, 8, FinalBoard):-
+    copy(Board, FinalBoard),
+    true.
+
+randomBottom(Prev, Board, Pos, FinalBoard):-
+    length(Prev, Size),
+    (
+        Size == 2 ->
+        random(1, 3, R),
+        (
+            R == 1 ->
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , white == Color1 ->
+                fail
+                ;
+                append([white], [Color1], NewPrev),
+                setPeca(8, Pos, white, Board, NewBoard),
+                NewColumn is Pos +1,
+                randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+            )
+            ;
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , black == Color1 ->
+                fail
+                ;
+                append([black], [Color1], NewPrev),
+                setPeca(8, Pos, black, Board, NewBoard),
+                NewColumn is Pos +1,
+                randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+            )
+
+        )
+
+        ;
+        random(1, 3, R),
+        (
+            R == 1 ->
+            setPeca(8, Pos, white, Board, NewBoard),
+            append([white], Prev, NewPrev),
+            NewColumn is Pos +1,
+            randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+            ;
+            setPeca(8, Pos, black, Board, NewBoard),
+            append([black], Prev, NewPrev),
+            NewColumn is Pos +1,
+            randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+
+        )
+    ).
+
+
+
+randomBottom(Prev, Board, Pos, FinalBoard):-
+    randomBottom(Prev, Board, Pos, FinalBoard).
+
+
+
+
+randomLeft( _, Board, 8, FinalBoard):-
+    copy(Board, FinalBoard),
+    true.
+
+randomLeft(Prev, Board, Pos, FinalBoard):-
+    length(Prev, Size),
+    (
+        Size == 2 ->
+        random(1, 3, R),
+        (
+            R == 1 ->
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , white == Color1 ->
+                fail
+                ;
+                append([white], [Color1], NewPrev),
+                setPeca(Pos, 1, white, Board, NewBoard),
+                NewRow is Pos +1,
+                randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+
+            )
+            ;
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , black == Color1 ->
+                fail
+                ;
+                append([black], [Color1], NewPrev),
+                setPeca(Pos, 1, black, Board, NewBoard),
+                NewRow is Pos +1,
+                randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+
+            )
+
+        )
+
+        ;
+        random(1, 3, R),
+        (
+            R == 1 ->
+            setPeca(Pos, 1, white, Board, NewBoard),
+            append([white], Prev, NewPrev),
+            NewRow is Pos +1,
+            randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+
+            ;
+            setPeca(Pos, 1, black, Board, NewBoard),
+            append([black], Prev, NewPrev),
+            NewRow is Pos +1,
+            randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+
+        )
+    ).
+
+
+
+randomLeft(Prev, Board, Pos, FinalBoard):-
+    randomLeft(Prev, Board, Pos, FinalBoard).
+
+
+
+
+
+
+randomRight( _, Board, 8, FinalBoard):-
+    copy(Board, FinalBoard),
+    true.
+
+randomRight(Prev, Board, Pos, FinalBoard):-
+    length(Prev, Size),
+    (
+        Size == 2 ->
+        random(1, 3, R),
+        (
+            R == 1 ->
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , white == Color1 ->
+                fail
+                ;
+                append([white], [Color1], NewPrev),
+                setPeca(Pos, 8, white, Board, NewBoard),
+                NewRow is Pos +1,
+                randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
+
+            )
+            ;
+            nth1(1, Prev, Color1),
+            nth1(2, Prev, Color2),
+            (
+                Color1 == Color2 , black == Color1 ->
+                fail
+                ;
+                append([black], [Color1], NewPrev),
+                setPeca(Pos, 8, black, Board, NewBoard),
+                NewRow is Pos +1,
+                randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
+
+            )
+
+        )
+
+        ;
+        random(1, 3, R),
+        (
+            R == 1 ->
+            setPeca(Pos, 8, white, Board, NewBoard),
+            append([white], Prev, NewPrev),
+            NewRow is Pos +1,
+            randomRight(NewPrsev, NewBoard, NewRow, FinalBoard)
+
+            ;
+            setPeca(Pos, 8, black, Board, NewBoard),
+            append([black], Prev, NewPrev),
+            NewRow is Pos +1,
+            randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
+
+        )
+    ).
+
+
+
+randomRight(Prev, Board, Pos, FinalBoard):-
+    randomRight(Prev, Board, Pos, FinalBoard).
