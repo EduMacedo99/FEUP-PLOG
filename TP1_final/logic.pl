@@ -1,13 +1,11 @@
 game(Player1, Player2) :-
       randomBoard(Board, NewBoard),
-      display_game(NewBoard),
       mainLoop(NewBoard),
       goToMenu(Input).
 
 
 game2(Player1, CPU) :-
       randomBoard(Board, NewBoard),
-      display_game(NewBoard),
       mainLoop2(NewBoard),
       goToMenu(Input).
 
