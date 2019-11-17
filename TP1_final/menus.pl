@@ -14,7 +14,7 @@ travelBack(0):-
     menu.
 
 manageInput(0) :-
-    write('\nExiting FUSE').
+    write('\n> Exiting FUSE').
 
 manageInput(1) :-
     write('\33\[2J'),
@@ -37,7 +37,7 @@ manageInput(3) :-
 manageInput(4) :-
     write('\33\[2J'),
     write('Starting CPU(W) vs CPU(B) game\n'),
-    game3(white, black),
+    game4(white, black),
     write('\n| Thanks for playing FUSE |\n\n').
 
 

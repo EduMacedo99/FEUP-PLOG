@@ -56,6 +56,18 @@ tabuleiroFinal3([
     [null, empty, empty, empty, black, white, empty, null]
     ]).
 
+tabuleiroVisitado([
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false]
+    ]).
+
+
 pos(0,'a').    
 pos(1,'b').
 pos(2,'c').
