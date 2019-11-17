@@ -34,11 +34,13 @@ game_over(Board) :-
     checkGameOverLeft(Board, 1, 1),
     write('===========================\n'),
     write('=====    GAME OVER    =====\n'),
-    %  tabuleiroVisitado(BoardV),
-    %  traverseBoard(Board, BoardV, 1, 1, black, 0, BScore),
-    %  tabuleiroVisitado(BoardV2),
-    %  traverseBoard(Board, BoardV2, 1, 1, white, 0, WScore),  
-    %  printWinner(BScore, WScore),  
+    %determine winner here
+    tabuleiroVisitado(BoardV),
+    traverseBoard(Board, BoardV, 1, 1, black, 0, BScore),
+    write(BScore),
+    tabuleiroVisitado(BoardV2),
+    traverseBoard(Board, BoardV2, 1, 1, white, 0, WScore),  
+    printWinner(BScore, WScore),
     write('===========================\n').
 
 printWinner(B, W):-
@@ -709,8 +711,8 @@ choose_move(CPU, Level, ListOfOutputs, Board, NewBoard):-
 
 
 %%%%% DETERMINE WINNER BELOW %%%%%
-traverseBoard(Board, BoardV, Row, Col, Player, Score, ScoreAux) :-
-    investigaPeca(Board, BoardV, Row, Col, Player, 0, BoardVisited, ScoreAuxInvest),
+traverseBoard(Board, Row, Col, Player, Score, ScoreAux) :-
+    investigaPeca(Board, Row, Col, Player, 0, ScoreAuxInvest),
     (
         (ScoreAuxInvest > Score, ScoreAuxTraverse is ScoreAuxInvest);
         ScoreAuxTraverse is Score
@@ -719,35 +721,26 @@ traverseBoard(Board, BoardV, Row, Col, Player, Score, ScoreAux) :-
 	(
 		(
         	NewCol > 8, NewRow is Row + 1, %se ultrapassar 8 next row
-			traverseBoard(Board, BoardVisited, NewRow, 1, Player, Score, ScoreAuxTraverse)
+			traverseBoard(Board, NewRow, 1, Player, Score, ScoreAuxTraverse)
 		);
-		traverseBoard(Board, BoardVisited, Row, NewCol, Player, Score, ScoreAuxTraverse)
+		traverseBoard(Board, Row, NewCol, Player, Score, ScoreAuxTraverse)
 	),
 	ScoreAux is ScoreAuxTraverse.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-investigaPeca(Board, BoardV, Row, Col, Player, Score, BoardVisited, NewScore) :-
+investigaPeca(Board, Row, Col, Player, Score, NewScore) :-
     (
-        getVisited(BoardV, Row, Col, Value),
-        Value \= true,
-        setVisited(BoardV, Row, Col, true, BoardAfter),
-        copy(BoardAfter, BoardVisited),
         getPeca(Row, Col, Board, Tipo),
+        Tipo \= visited,
+        setPeca(NewRow, Column, Peca, Board, BoardV),
         Player == Tipo,
         AuxScore is Score + 1,
         checkLeft(Board, Row, Col, Player, AuxScore, NewScore),
         checkRight(Board, Row, Col, Player, AuxScore, NewScore),
         checkTop(Board, Row, Col, Player, AuxScore, NewScore),
-        checkBottom(Board, Row, Col, Player, AuxScore, NewScore)
-    );
-    NewScore is Score.
-
-
-getVisited(BoardVisited, Row, Col, Value):-
-    getPeca(Row, Col, BoardVisited, Value).
-
-setVisited(BoardVisited, Row, Col, Value, BoardAfter):-
-    setPeca(Row, Col, Value, BoardVisited, BoardAfter).
-
+        checkBottom(Board, Row, Col, Player, AuxScore, NewScore),
+        Board is BoardV
+    )
+    ; NewScore is Score.
 
 checkLeft(Board, Row, Col, Player, AuxScore, NewScore):-
     (

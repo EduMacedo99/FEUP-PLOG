@@ -30,17 +30,6 @@ tabuleiroFinal([ %just an example
     [empty, black, white, empty, white, white, white, empty],
     [empty, empty, empty, empty, black, white, empty, empty],
     [null, empty, empty, empty, empty, empty, empty, null]
-    ]).    
-
-tabuleiroVisitado([
-    [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false]
     ]).
 
 pos(0,'a'). pos(1,'b').
