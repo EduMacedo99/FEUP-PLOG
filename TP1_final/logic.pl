@@ -52,8 +52,8 @@ printWinner(B, W):-
 
 mainLoop(Player1, Player2, Board):-
      game_over(Board);
-        findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
-        length(ListOfOutputs, Size1),
+        valid_moves(Board, Player1, ListOfMoves),
+        length(ListOfMoves, Size1),
 
          (  Size1 \= 0 ->
                 write('> White Player\'s turn...\n'),
@@ -64,8 +64,8 @@ mainLoop(Player1, Player2, Board):-
                 copy(Board, NewBoard)
          ),
 
-         findall([R2,C2,N2], findall_aux(NewBoard, R2, C2, N2, black), ListOfOutputs2),
-         length(ListOfOutputs2, Size2),
+         valid_moves(NewBoard, Player2, ListOfMoves2),
+         length(ListOfMoves2, Size2),
          (
             Size2 \= 0 ->
             write('> Black Player\'s turn...\n'),
@@ -80,8 +80,8 @@ mainLoop(Player1, Player2, Board):-
 
  mainLoop2(Player1, CPU, Board, Level):-
      game_over(Board);
-     findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
-        length(ListOfOutputs, Size1),
+     valid_moves(Board, Player1, ListOfMoves),
+        length(ListOfMoves, Size1),
 
          (  Size1 \= 0 ->
                 
@@ -93,13 +93,13 @@ mainLoop(Player1, Player2, Board):-
          ),
 
      
-    findall([R2,C2,N2], findall_aux(NewBoard, R2, C2, N2, black), ListOfOutputs2),
-         length(ListOfOutputs2, Size2),
+    valid_moves(NewBoard, CPU, ListOfMoves2),
+         length(ListOfMoves2, Size2),
 
           ( Size2 \= 0 ->
 
                 write('> Black Player\'s turn...\n'),
-                choose_move(CPU, Level, ListOfOutputs2, NewBoard, FinalBoard),
+                choose_move(CPU, Level, ListOfMoves2, NewBoard, FinalBoard),
                 display_game(FinalBoard)
                 ;
                 write('No valid plays...\n'),
@@ -111,26 +111,26 @@ mainLoop(Player1, Player2, Board):-
 
  mainLoop3(CPU1, CPU2, Board):-
      game_over(Board);
-     findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
-        length(ListOfOutputs, Size1),
+     valid_moves(Board, CPU1, ListOfMoves),
+        length(ListOfMoves, Size1),
 
          (  Size1 \= 0 ->
                 
                 write('> White Player\'s turn...\n'),
-                choose_move(CPU1, 1, ListOfOutputs, Board, NewBoard)
+                choose_move(CPU1, 1, ListOfMoves, Board, NewBoard)
                 ;
                 write('No valid plays for white player...\n'),
                 copy(Board, NewBoard)
          ),
 
      
-    findall([R2,C2,N2], findall_aux(NewBoard, R2, C2, N2, black), ListOfOutputs2),
-         length(ListOfOutputs2, Size2),
+     valid_moves(Board, CPU2, ListOfMoves2),
+         length(ListOfMoves2, Size2),
 
           ( Size2 \= 0 ->
 
                 write('> Black Player\'s turn...\n'),
-                choose_move(CPU2, 1, ListOfOutputs2, NewBoard, FinalBoard)
+                choose_move(CPU2, 1, ListOfMoves2, NewBoard, FinalBoard)
                 ;
                 write('No valid plays...\n'),
                 copy(NewBoard, FinalBoard)
@@ -139,6 +139,11 @@ mainLoop(Player1, Player2, Board):-
     
      display_game(FinalBoard),
      mainLoop3(CPU1, CPU2, FinalBoard).
+
+
+
+valid_moves(Board, Player, ListOfMoves):-
+    findall([R,C,N], findall_aux(Board, R, C, N, Player), ListOfMoves).
 
 
 
