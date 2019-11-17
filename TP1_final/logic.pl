@@ -1,16 +1,27 @@
 game(Player1, Player2) :-
-      randomBoard(Board, NewBoard),
+      randomBoard(NewBoard),
       display_game(NewBoard),
-      mainLoop(NewBoard),
-      goToMenu(Input).
+      mainLoop(Player1, Player2, NewBoard),
+      goToMenu(_Input).
 
 
-game2(Player1, CPU) :-
-      randomBoard(Board, NewBoard),
+game2(Player1, CPU, Level) :-
+      randomBoard(NewBoard),
       display_game(NewBoard),
-      mainLoop2(NewBoard),
-      goToMenu(Input).
+      mainLoop2(Player1, CPU, NewBoard, Level),
+      goToMenu(_Input).
 
+game2(Player1, CPU, Level) :-
+      randomBoard(NewBoard),
+      display_game(NewBoard),
+      mainLoop2(Player1, CPU, NewBoard, Level),
+      goToMenu(_Input).
+
+game4(CPU1, CPU2, level) :-
+      randomBoard(NewBoard),
+      display_game(NewBoard),
+      mainLoop3(CPU1, CPU2, NewBoard),
+      goToMenu(_Input).
 
 game_over(Board) :-
     checkGameOverTop(Board, 1, 1), %check row 1 between 2 and 7
@@ -22,14 +33,14 @@ game_over(Board) :-
     write('===========================\n').
 
 
- mainLoop(Board):-
+ mainLoop(Player1, Player2, Board):-
      game_over(Board);
         findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
         length(ListOfOutputs, Size1),
 
          (  Size1 \= 0 ->
                 write('> White Player\'s turn...\n'),
-                askCoordsWhite(Board, NewBoard),
+                askCoordsWhite(Player1, Board, NewBoard),
                 display_game(NewBoard)
                 ;
                 write('No valid plays for white player...\n'),
@@ -41,16 +52,16 @@ game_over(Board) :-
          (
             Size2 \= 0 ->
             write('> Black Player\'s turn...\n'),
-            askCoordsBlack(NewBoard, FinalBoard),
+            askCoordsBlack(Player2, NewBoard, FinalBoard),
             display_game(FinalBoard)
             ;
             write('No valid plays...\n'),
             copy(NewBoard, FinalBoard)
          ),
 
-     mainLoop(FinalBoard).
+     mainLoop(Player1, Player2, FinalBoard).
 
- mainLoop2(Board):-
+ mainLoop2(Player1, CPU, Board, Level):-
      game_over(Board);
      findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
         length(ListOfOutputs, Size1),
@@ -58,8 +69,7 @@ game_over(Board) :-
          (  Size1 \= 0 ->
                 
                 write('> White Player\'s turn...\n'),
-                askCoordsWhite(Board, NewBoard),
-                display_game(NewBoard)
+                askCoordsWhite(Player1, Board, NewBoard)
                 ;
                 write('No valid plays for white player...\n'),
                 copy(Board, NewBoard)
@@ -72,14 +82,47 @@ game_over(Board) :-
           ( Size2 \= 0 ->
 
                 write('> Black Player\'s turn...\n'),
-                generateMove(ListOfOutputs2, NewBoard, FinalBoard),
+                choose_move(CPU, Level, ListOfOutputs2, NewBoard, FinalBoard),
                 display_game(FinalBoard)
                 ;
                 write('No valid plays...\n'),
                 copy(NewBoard, FinalBoard)
          ),
 
-     mainLoop2(FinalBoard).
+     mainLoop2(Player1, CPU, FinalBoard, Level).
+
+
+ mainLoop3(CPU1, CPU2, Board):-
+     game_over(Board);
+     findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs),
+        length(ListOfOutputs, Size1),
+
+         (  Size1 \= 0 ->
+                
+                write('> White Player\'s turn...\n'),
+                choose_move(CPU1, 1, ListOfOutputs, Board, NewBoard)
+                ;
+                write('No valid plays for white player...\n'),
+                copy(Board, NewBoard)
+         ),
+
+     
+    findall([R2,C2,N2], findall_aux(NewBoard, R2, C2, N2, black), ListOfOutputs2),
+         length(ListOfOutputs2, Size2),
+
+          ( Size2 \= 0 ->
+
+                write('> Black Player\'s turn...\n'),
+                choose_move(CPU2, 1, ListOfOutputs2, NewBoard, FinalBoard)
+                ;
+                write('No valid plays...\n'),
+                copy(NewBoard, FinalBoard)
+         ),
+
+    
+     display_game(FinalBoard),
+     mainLoop3(CPU1, CPU2, FinalBoard).
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -316,8 +359,8 @@ findall_aux_down(Board, R, C, N, Player, RowOut2, ColOut2, NumOut2) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIND ALL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-whiteTurn(Board, NewBoard, Row, Column, Number):-
-    checkValidPlay(white, Board, Row, Column, Number),
+move(Player, Board, NewBoard, Row, Column, Number):-
+    checkValidPlay(Player, Board, Row, Column, Number),
     getPeca(Row, Column, Board, Peca),
     (
         (
@@ -341,48 +384,26 @@ whiteTurn(Board, NewBoard, Row, Column, Number):-
 
 
 
-askCoordsWhite(Board, NewBoard):-
+askCoordsWhite(Player, Board, NewBoard):-
     askRow(NewRow),
     nl,
     askColumn(NewColumn),
     askBlocks(Number),
-    whiteTurn(Board, NewBoard, NewRow, NewColumn, Number).
+    move(Player, Board, NewBoard, NewRow, NewColumn, Number).
 
-askCoordsWhite(Board, NewBoard):-
-    askCoordsWhite(Board, NewBoard).
+askCoordsWhite(Player, Board, NewBoard):-
+    askCoordsWhite(Player, Board, NewBoard).
 
-%%%%%%%%%%%%%%%%%%%%%%%
-blackTurn(Board, NewBoard, Row, Column, Number):-
-    checkValidPlay(black, Board, Row, Column, Number),
-    getPeca(Row, Column, Board, Peca),
-    (
-        (
-            Column == 1,
-            makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
-        );
-        (
-            Column == 8,
-            makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
-        );
-        (
-            Row == 1,
-            makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
-        );
-        (
-            Row == 8,
-            makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
-        )
-    ).
 
-askCoordsBlack(Board, NewBoard):-
+askCoordsBlack(Player, Board, NewBoard):-
     askRow(NewRow),
     nl,
     askColumn(NewColumn),
     askBlocks(Number),
-    blackTurn(Board, NewBoard, NewRow, NewColumn, Number).
+    move(Player, Board, NewBoard, NewRow, NewColumn, Number).
 
-askCoordsBlack(Board, NewBoard):-
-    askCoordsBlack(Board, NewBoard).
+askCoordsBlack(Player, Board, NewBoard):-
+    askCoordsBlack(Player, Board, NewBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -518,7 +539,7 @@ pushUp(Row, Column, Board, Peca, TempBoard):-
             Peca1 == empty ->
                 move1stepDown(Row, Column, Board, Steps, Peca, Board1, NewStep),
                 (
-                    NewStep == 0 ->
+                    NewStep == 0 -> 
                         copy(Board1, NewBoard),
                         true
                         ;
@@ -551,7 +572,7 @@ checkValidStepRight(Row, Column, Board, Steps, Counter) :-
     ),
     checkValidStepRight(Row, NextColumn, Board, Steps, NewCounter).
 
-checkValidStepRight(Row, Column, Board, Steps, Counter) :-
+checkValidStepRight(_, _, _, Steps, Counter) :-
     \+ (Steps > Counter).
 
 checkValidStepLeft(Row, Column, Board, Steps, Counter) :-
@@ -565,7 +586,7 @@ checkValidStepLeft(Row, Column, Board, Steps, Counter) :-
     ),
     checkValidStepLeft(Row, NextColumn, Board, Steps, NewCounter).
 
-checkValidStepLeft(Row, Column, Board, Steps, Counter) :-
+checkValidStepLeft(_, _, _, Steps, Counter) :-
     \+ (Steps > Counter).
 
 checkValidStepDown(Row, Column, Board, Steps, Counter) :-
@@ -579,7 +600,7 @@ checkValidStepDown(Row, Column, Board, Steps, Counter) :-
     ),
     checkValidStepDown(NextRow, Column, Board, Steps, NewCounter).
 
-checkValidStepDown(Row, Column, Board, Steps, Counter) :-
+checkValidStepDown(_, _, _, Steps, Counter) :-
     \+ (Steps > Counter).
 
 checkValidStepUp(Row, Column, Board, Steps, Counter) :-
@@ -593,10 +614,10 @@ checkValidStepUp(Row, Column, Board, Steps, Counter) :-
     ),
     checkValidStepUp(NextRow, Column, Board, Steps, NewCounter).
 
-checkValidStepUp(Row, Column, Board, Steps, Counter) :-
+checkValidStepUp(_, _, _, Steps, Counter) :-
     \+ (Steps >  Counter).
 
-generateMove(ListOfOutputs, Board, NewBoard):-
+choose_move(CPU, Level, ListOfOutputs, Board, NewBoard):-
     length(ListOfOutputs, Size),
     (
         Size == 1 ->        %%avoid random(1, 1, R)
@@ -604,39 +625,31 @@ generateMove(ListOfOutputs, Board, NewBoard):-
         ;
         random(1, Size, R)
     ),
-    nth1(R, ListOfOutputs, Elem),
+    (
+        Level == 0 ->
+        nth1(1, ListOfOutputs, Elem)    
+        ;
+        nth1(R, ListOfOutputs, Elem)
+    ),
     nl,
     write(Elem),
     nl,
     nth1(1, Elem, Row),
     nth1(2, Elem, Column),
     nth1(3, Elem, Number),
-    getPeca(Row, Column, Board, Peca),
-    checkValidPlay(Peca, Board, Row, Column, Number),
+    move(CPU, Board, NewBoard, Row, Column, Number),
     checkRow(X, Row),
-    write('Black Player chose:\nRow: '), write(X), nl,
-    write('Column: '), write(Column), nl,
-    write('Blocks: '), write(Number), nl,
     (
-        (
-            Column == 1,
-            makeMovementRight(Row, Column, Board, Number, Peca, NewBoard)
-        );
-        (
-            Column == 8,
-            makeMovementLeft(Row, Column, Board, Number, Peca, NewBoard)
-        );
-        (
-            Row == 1,
-            makeMovementDown(Row, Column, Board, Number, Peca, NewBoard)
-        );
-        (
-            Row == 8,
-            makeMovementUp(Row, Column, Board, Number, Peca, NewBoard)
-        )
-    ).
+        CPU == black ->
+        write('Black Player chose:\nRow: ')
+        ;
+        write('White Player chose:\nRow: ')
+    ),
+    write(X), nl,
+    write('Column: '), write(Column), nl,
+    write('Blocks: '), write(Number), nl.
 
-generateMove(ListOfOutputs, Board, NewBoard):-
-    generateMove(ListOfOutputs, Board, NewBoard).
+choose_move(CPU, ListOfOutputs, Board, NewBoard):-
+    choose_move(CPU, ListOfOutputs, Board, NewBoard).
 
 

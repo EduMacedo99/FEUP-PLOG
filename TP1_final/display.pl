@@ -100,7 +100,7 @@ imprimeLinha([Head|Tail]) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GENERATE RANDOM BOARD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-randomBoard(Board, FinalBoard):-
+randomBoard(FinalBoard):-
     tabuleiroVazio(Board),
     emptyList(Prev),
     randomTop(Prev, Board, 2, NewBoard),
@@ -109,8 +109,7 @@ randomBoard(Board, FinalBoard):-
     emptyList(Prev2),
     randomLeft(Prev2, NewBoard2, 2, NewBoard3),
     emptyList(Prev3),
-    randomRight(Prev3, NewBoard3, 2, FinalBoard),
-    display_game(FinalBoard).
+    randomRight(Prev3, NewBoard3, 2, FinalBoard).
 
 
 
@@ -362,7 +361,7 @@ randomRight(Prev, Board, Pos, FinalBoard):-
             setPeca(Pos, 8, white, Board, NewBoard),
             append([white], Prev, NewPrev),
             NewRow is Pos +1,
-            randomRight(NewPrsev, NewBoard, NewRow, FinalBoard)
+            randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
 
             ;
             setPeca(Pos, 8, black, Board, NewBoard),
