@@ -13,7 +13,6 @@ checkRow('g', 7).
 checkRow('h', 8).
 
 checkRow(_Column, _NewColumn):-
-    write('> Invalid Row!\n'),
     fail.
 
 askColumn(NewColumn) :-
@@ -31,9 +30,9 @@ checkColumn(7, 7).
 checkColumn(8, 8).
 
 checkColumn(_Column, _NewColumn):-
-    write('Invalid Column!\n> Choose a new position!\n'),
     fail.
 
+% Verifica se peça escolhida é da cor do jogador
 checkCoord(Player, Row, Column, Board, Peca):-
     getPeca(Row, Column, Board, Peca),
     (   Peca \= Player -> fail
