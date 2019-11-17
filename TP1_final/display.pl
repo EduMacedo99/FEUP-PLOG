@@ -21,7 +21,7 @@ tabuleiroVazio([
     [null, empty, empty, empty, empty, empty, empty, null]
     ]).
 
-tabuleiroFinal([
+tabuleiroFinal([ %just an example
     [null, empty, empty, empty, empty, empty, empty, null],
     [empty, empty, empty, black, black, black, white, empty],
     [empty, empty, white, empty, white, white, black, empty],
@@ -31,30 +31,6 @@ tabuleiroFinal([
     [empty, empty, empty, empty, black, white, empty, empty],
     [null, empty, empty, empty, empty, empty, empty, null]
     ]).    
-
-
-tabuleiroFinal2([
-    [null, empty, empty, empty, empty, black, empty, null],
-    [empty, empty, empty, black, black, black, white, empty],
-    [empty, empty, white, empty, white, white, black, empty],
-    [empty, black, black, black, black, black, white, white],
-    [empty, empty, empty, empty, white, black, white, empty],
-    [empty, black, white, empty, white, empty, white, empty],
-    [empty, empty, empty, empty, empty, empty, empty, empty],
-    [null, empty, empty, empty, black, white, empty, null]
-    ]).    
-    
-
-tabuleiroFinal3([
-    [null, empty, empty, empty, empty, black, empty, null],
-    [black, empty, empty, black, black, black, white, empty],
-    [empty, empty, white, empty, white, white, black, empty],
-    [empty, black, black, black, black, black, white, white],
-    [black, empty, empty, empty, white, black, white, empty],
-    [empty, black, white, empty, white, white, white, empty],
-    [empty, empty, empty, empty, black, empty, empty, empty],
-    [null, empty, empty, empty, black, white, empty, null]
-    ]).
 
 tabuleiroVisitado([
     [false, false, false, false, false, false, false, false],
@@ -67,21 +43,13 @@ tabuleiroVisitado([
     [false, false, false, false, false, false, false, false]
     ]).
 
+pos(0,'a'). pos(1,'b').
+pos(2,'c'). pos(3,'d').
+pos(4,'e'). pos(5,'f').
+pos(6,'g'). pos(7,'h').
 
-pos(0,'a').    
-pos(1,'b').
-pos(2,'c').
-pos(3,'d').
-pos(4,'e').
-pos(5,'f').
-pos(6,'g').
-pos(7,'h').
-
-
-symbol(empty,'.').
-symbol(null,' ').
-symbol(black,'B').
-symbol(white,'W').
+symbol(empty,'.'). symbol(null,' ').
+symbol(black,'B'). symbol(white,'W').
 
 display_game(Board):-
     nl,
@@ -110,8 +78,6 @@ imprimeLinha([Head|Tail]) :-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GENERATE RANDOM BOARD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 randomBoard(FinalBoard):-
     tabuleiroVazio(Board),
     emptyList(Prev),
@@ -122,10 +88,6 @@ randomBoard(FinalBoard):-
     randomLeft(Prev2, NewBoard2, 2, NewBoard3),
     emptyList(Prev3),
     randomRight(Prev3, NewBoard3, 2, FinalBoard).
-
-
-
-
 
 randomTop( _, Board, 8, FinalBoard):-
     copy(Board, FinalBoard),
@@ -148,7 +110,6 @@ randomTop(Prev, Board, Pos, FinalBoard):-
                 setPeca(1, Pos, white, Board, NewBoard),
                 NewColumn is Pos +1,
                 randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
-
             )
             ;
             nth1(1, Prev, Color1),
@@ -189,12 +150,6 @@ randomTop(Prev, Board, Pos, FinalBoard):-
 randomTop(Prev, Board, Pos, FinalBoard):-
     randomTop(Prev, Board, Pos, FinalBoard).
 
-
-
-
-
-
-
 randomBottom( _, Board, 8, FinalBoard):-
     copy(Board, FinalBoard),
     true.
@@ -229,9 +184,7 @@ randomBottom(Prev, Board, Pos, FinalBoard):-
                 setPeca(8, Pos, black, Board, NewBoard),
                 NewColumn is Pos +1,
                 randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
-
             )
-
         )
 
         ;
@@ -252,13 +205,8 @@ randomBottom(Prev, Board, Pos, FinalBoard):-
         )
     ).
 
-
-
 randomBottom(Prev, Board, Pos, FinalBoard):-
     randomBottom(Prev, Board, Pos, FinalBoard).
-
-
-
 
 randomLeft( _, Board, 8, FinalBoard):-
     copy(Board, FinalBoard),
