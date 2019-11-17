@@ -1,37 +1,37 @@
+% Starts PvP game
 game(Player1, Player2) :-
-    % mode 1
       randomBoard(NewBoard),
       display_game(NewBoard),
       mainLoop(Player1, Player2, NewBoard),
       goToMenu(_Input).
 
-
+% Starts PvCPU game in very easy mode
 game2(Player1, CPU, Level) :-
-    % mode 2
       randomBoard(NewBoard),
       display_game(NewBoard),
       mainLoop2(Player1, CPU, NewBoard, Level),
       goToMenu(_Input).
 
+% Starts PvCPU game in random mode
 game2(Player1, CPU, Level) :-
-    % mode 3
       randomBoard(NewBoard),
       display_game(NewBoard),
       mainLoop2(Player1, CPU, NewBoard, Level),
       goToMenu(_Input).
 
+% Starts CPUvCPU game
 game4(CPU1, CPU2) :-
-    % mode 4
       randomBoard(NewBoard),
       display_game(NewBoard),
       mainLoop3(CPU1, CPU2, NewBoard),
       goToMenu(_Input).
 
+% Checks if the game is over
 game_over(Board) :-
-    checkGameOverTop(Board, 1, 1),      %check row 1 between 2 and 7
-    checkGameOverRight(Board, 1, 8),    %check column 8 between 2 and 7
-    checkGameOverBottom(Board, 8, 1),   %check row 8 between 2 and 7
-    checkGameOverLeft(Board, 1, 1),     %check column 1 between 2 and 7
+    checkGameOverTop(Board, 1, 1), %check row 1 between 2 and 7
+    checkGameOverRight(Board, 1, 8),
+    checkGameOverBottom(Board, 8, 1), 
+    checkGameOverLeft(Board, 1, 1),
     write('===========================\n'),
     write('====     GAME OVER     ====\n'),
     %determine winner here
@@ -45,9 +45,8 @@ printWinner(B, W):-
     B > W,  write('==== BLACK PLAYER WINS ====\n');
     B < W,  write('==== WHITE PLAYER WINS ====\n').
 
-
-
-mainLoop(Player1, Player2, Board):-
+% main game loop for game PvP
+ mainLoop(Player1, Player2, Board):-
      game_over(Board);
         valid_moves(Board, Player1, ListOfMoves),
         length(ListOfMoves, Size1),
@@ -75,6 +74,7 @@ mainLoop(Player1, Player2, Board):-
 
      mainLoop(Player1, Player2, FinalBoard).
 
+% Main game loop for game2 PvCPU 
 mainLoop2(Player1, CPU, Board, Level):-
      game_over(Board);
      valid_moves(Board, Player1, ListOfMoves),
@@ -105,7 +105,7 @@ mainLoop2(Player1, CPU, Board, Level):-
 
      mainLoop2(Player1, CPU, FinalBoard, Level).
 
-
+% Main game loop for CPUvCPU game3
  mainLoop3(CPU1, CPU2, Board):-
      game_over(Board);
      valid_moves(Board, CPU1, ListOfMoves),
@@ -145,6 +145,13 @@ valid_moves(Board, Player, ListOfMoves):-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Predicados chamados por game_over
+% Funciona da seguinte forma
+%   - O checkGameOverTop por exemplo verifica se todas as casas que têm pecas inicialmente
+%     estao vazias. Caso encontre uma que nao esteja veriica se essa coluna está cheia (Caso esteja cheia significa que essa peça
+%     não poder ser jogada e portanto o jogo poderá realmente ter acabado na mesma). Caso o oposto aconteça dá fail sinalizando
+%     que o jogo nao acabou 
 checkGameOverTop(_, _, 7).
 checkGameOverTop(Board, RowIndex, ColIndex):-
     NextColIndex is ColIndex + 1,
@@ -224,7 +231,7 @@ checkRowFullLeft(Board, Row, Col):-
     checkRowFullLeft(Board, Row, Nextcol).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+% Predicados auxiliares
 getPeca(NLinha, NColuna, Board, Peca):-
     nth1(NLinha, Board, Coluna),
     nth1(NColuna, Coluna, Peca).
@@ -247,7 +254,18 @@ setColuna(N, Peca, [X | Resto], [X | Mais]):-
     Next is N - 1,
     setColuna(Next, Peca, Resto, Mais).
 
+decr(X, X1) :-
+    X1 is X-1.
 
+copy(L,R) :- accCp(L,R).
+    accCp([],[]).
+
+accCp([H|T1],[H|T2]) :- accCp(T1,T2).
+
+% Predicado que verifica se jogada é valida
+%   - Ve se posicao escolhida tem a cor certa
+%   - Ve se o numero de pecas que se pretende avançar é valido contando o numero de casas 'empty'
+%     da respetiva linha/coluna. Se o numero pretendido for superior a esta contagem, a jogada nao é valida
 checkValidPlay(Player, Board, Row, Column, Number):-
     getPeca(Row, Column, Board, Peca),
     checkCoord(Player, Row, Column, Board, Peca),
@@ -273,7 +291,9 @@ checkValidPlay(Player, Board, Row, Column, Number):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIND ALL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+% predicados auxiliares para findall
+% Procuram todas as jogadas possiveis e vê se são vá~lidas evocando o checkValidPlay
+% Ha 4 auxiliares -> para as 2 colunas e para as 2 linhas que contem as pecas iniciais
 findall_aux(Board, RowOut, ColOut, Number, Player) :-
     findall_aux_right(Board, 2, 8, 1, Player, RowOut, ColOut, Number);
     findall_aux_left(Board, 2, 1, 1, Player, RowOut, ColOut, Number);
@@ -377,7 +397,7 @@ findall_aux_down(Board, R, C, N, Player, RowOut2, ColOut2, NumOut2) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIND ALL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+% Jogada que, com base no valor das variaveis de entrada (Row, Column e Number) efetua a jogada no tabuleiro
 move(Player, Board, NewBoard, Row, Column, Number):-
     checkValidPlay(Player, Board, Row, Column, Number),
     getPeca(Row, Column, Board, Peca),
@@ -402,7 +422,7 @@ move(Player, Board, NewBoard, Row, Column, Number):-
 
 
 
-
+% Pergunta a jogada ao utilizador e chama o predicado move para a realizar
 askCoordsWhite(Player, Board, NewBoard):-
     askRow(NewRow),
     nl,
@@ -411,9 +431,10 @@ askCoordsWhite(Player, Board, NewBoard):-
     move(Player, Board, NewBoard, NewRow, NewColumn, Number).
 
 askCoordsWhite(Player, Board, NewBoard):-
+    write('> Invalid Play!\n> Try again :)\n'),
     askCoordsWhite(Player, Board, NewBoard).
 
-
+% Semelhante à de cima mas para o jogador das peças pretas
 askCoordsBlack(Player, Board, NewBoard):-
     askRow(NewRow),
     nl,
@@ -422,18 +443,15 @@ askCoordsBlack(Player, Board, NewBoard):-
     move(Player, Board, NewBoard, NewRow, NewColumn, Number).
 
 askCoordsBlack(Player, Board, NewBoard):-
+    write('> Invalid Play!\nTry again\n'),
     askCoordsBlack(Player, Board, NewBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%
 
-decr(X, X1) :-
-    X1 is X-1.
-
-copy(L,R) :- accCp(L,R).
-    accCp([],[]).
-
-accCp([H|T1],[H|T2]) :- accCp(T1,T2).
-
+% Predicados auxiliares para o predicado o mov.
+%   - Devido a natureza do jogo em que nas jogadas se empurra as peças
+%     desenvolvemos predicados de forma a que se mova uma peça uma casa de cada vez para conseguir calcular de forma
+%     eficaz o "empurrar das peças"
 move1stepRight(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
     setPeca(Row, Column, empty, Board, Board1),
     NewColumn is Column +1,
@@ -461,6 +479,7 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
     decr(Steps, NewStep).
 %%
 
+ % Predicados também auxiliar do predicado move que chamam os 4 predicados em cima (move1stepRight ...)para fazer mover a peça
  makeMovementRight(Row, Column, Board, Steps, Peca, NewBoard):-
     NextColumn is Column + 1,
     getPeca(Row, NextColumn, Board, Peca1),  
@@ -480,6 +499,8 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
                 makeMovementRight(Row, Column, TempBoard, Steps, Peca, NewBoard)
     ).
 
+% Predicado que empurra uma peça para a direita quando necessário
+% É recursiva pois pode ser necessária empurrar mais que uma peça
 pushRight(Row, Column, Board, Peca, TempBoard):-
     NextColumn is Column +2,
     NewColumn is Column +1,
@@ -580,6 +601,11 @@ pushDown(Row, Column, Board, Peca, TempBoard):-
         ; pushDown(NewRow, Column, Board, Peca2, TempBoard)
     ).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%Predicados auxiliares do predicado checkValidPlay
+
 checkValidStepRight(Row, Column, Board, Steps, Counter) :-
     Column < 7,
     NextColumn is Column + 1,
@@ -636,6 +662,13 @@ checkValidStepUp(Row, Column, Board, Steps, Counter) :-
 checkValidStepUp(_, _, _, Steps, Counter) :-
     \+ (Steps >  Counter).
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Predicado que ao receber a lista de jogadas válidas posiveis, dependendo do 'Level' de dificuldade
+% escolhe uma jogada à sorte ou então a primeira da lista
+% Chama também o predicado move para fazer a jogada
 choose_move(CPU, Level, ListOfOutputs, Board, NewBoard):-
     length(ListOfOutputs, Size),
     (
@@ -668,14 +701,13 @@ choose_move(CPU, Level, ListOfOutputs, Board, NewBoard):-
     write('Column: '), write(Column), nl,
     write('Blocks: '), write(Number), nl.
 
-choose_move(CPU, ListOfOutputs, Board, NewBoard):-
-    choose_move(CPU, ListOfOutputs, Board, NewBoard).
+choose_move(CPU, Level, ListOfOutputs, Board, NewBoard):-
+    choose_move(CPU, Level, ListOfOutputs, Board, NewBoard).
 
 
 
 
 %%%%% DETERMINE WINNER BELOW %%%%%
-% unfinished :(
 traverseBoard(_, 9, _, _, Score, ScoreAux) :-
 	ScoreAux is Score.
 
@@ -729,38 +761,53 @@ checkVisited(Board, Peca, Row, Col, RetBoard):-
 
 checkLeft(Board, Row, Col, Player, AuxScore, NewScore):-
     (
-        Col \= 1,
+        Col \= 1 ->
         NCol is Col-1,
         getPeca(Row, NCol, Board, Type),
-        Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
+        (
+            Type == Player ->
+            NewScore is AuxScore + 1
+            ; write('')
+        )
+        ; NewScore is AuxScore
+    ).
 
 checkRight(Board, Row, Col, Player, AuxScore, NewScore):-
     (
-        Col \= 8,
+        Col \= 8 ->
         NCol is Col+1,
         getPeca(Row, NCol, Board, Type),
-        Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
-    
+        (
+            Type == Player ->
+            NewScore is AuxScore + 1
+            ; write('')
+        )
+        ; NewScore is AuxScore
+    ).
 
 checkTop(Board, Row, Col, Player, AuxScore, NewScore):-
     (
-        Row \= 1,
+        Row \= 1 ->
         NRow is Row+1,
         getPeca(NRow, Col, Board,Type),
-        Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
+        (
+            Type == Player ->
+            NewScore is AuxScore + 1
+            ; write('')
+        )
+        ; NewScore is AuxScore
+    ).
 
 checkBottom(Board, Row, Col, Player, AuxScore, NewScore):-
     (
-        Row \= 8,
+        Row \= 8 ->
         NRow is Row-1,
         getPeca(NRow, Col, Board, Type),
-        Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
+        (
+            Type == Player ->
+            NewScore is AuxScore + 1
+            ; write('')
+        )
+        ; NewScore is AuxScore
+    ).
 %%%%% DETERMINE WINNER ABOVE %%%%%
