@@ -1,6 +1,0 @@
-findall([R,C,N], findall_aux(Board, R, C, N, white), ListOfOutputs)
-findall_aux(Board, RowOut, ColOut, Number, Player) :-
-    findall_aux_right(Board, 2, 8, 1, Player, RowOut, ColOut, Number);
-    findall_aux_left(Board, 2, 1, 1, Player, RowOut, ColOut, Number);
-    findall_aux_top(Board, 1, 2, 1, Player, RowOut, ColOut, Number);
-    findall_aux_down(Board, 8, 2, 1, Player, RowOut, ColOut, Number).
