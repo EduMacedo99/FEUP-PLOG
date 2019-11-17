@@ -30,11 +30,11 @@ game_over(Board) :-
     checkGameOverLeft(Board, 1, 1),
     write('===========================\n'),
     write('=====    GAME OVER    =====\n'),
-    % tabuleiroVisitado(BoardV),
-    % traverseBoard(Board, BoardV, 1, 1, black, 0, BScore),
-    % tabuleiroVisitado(BoardV2),
-    % traverseBoard(Board, BoardV2, 1, 1, white, 0, WScore),  
-    % printWinner(BScore, WScore),  
+     tabuleiroVisitado(BoardV),
+     traverseBoard(Board, BoardV, 1, 1, black, 0, BScore),
+     tabuleiroVisitado(BoardV2),
+     traverseBoard(Board, BoardV2, 1, 1, white, 0, WScore),  
+     printWinner(BScore, WScore),  
     write('===========================\n').
 
 printWinner(B, W):-
@@ -663,8 +663,8 @@ choose_move(CPU, Level, ListOfOutputs, Board, NewBoard):-
     write('Column: '), write(Column), nl,
     write('Blocks: '), write(Number), nl.
 
-choose_move(CPU, ListOfOutputs, Board, NewBoard):-
-    choose_move(CPU, ListOfOutputs, Board, NewBoard).
+choose_move(CPU, Level, ListOfOutputs, Board, NewBoard):-
+    choose_move(CPU, Level, ListOfOutputs, Board, NewBoard).
 
 
 
