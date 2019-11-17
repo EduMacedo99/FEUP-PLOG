@@ -3,7 +3,6 @@ askRow(NewRow) :-
     read(Row),
     checkRow(Row, NewRow).
 
-
 checkRow('a', 1).
 checkRow('b', 2).
 checkRow('c', 3).
@@ -22,7 +21,6 @@ askColumn(NewColumn) :-
     read(Column),
     checkColumn(Column, NewColumn).
 
-
 checkColumn(1, 1).
 checkColumn(2, 2).
 checkColumn(3, 3).
@@ -32,26 +30,15 @@ checkColumn(6, 6).
 checkColumn(7, 7).
 checkColumn(8, 8).
 
-
 checkColumn(_Column, _NewColumn):-
     write('Invalid Column!\n> Choose a new position!\n'),
     fail.
 
 checkCoord(Player, Row, Column, Board, Peca):-
     getPeca(Row, Column, Board, Peca),
-    (   Peca \= Player ->
-    fail
-    ;   write('')
+    (   Peca \= Player -> fail
+        ;   write('')
     ).
-
-% checkBlackCoord(Row, Column, Board, Peca):-
-%     getPeca(Row, Column, Board, Peca),
-%     (   Peca \= black ->
-%     write('not black!\n'), 
-%     fail
-%     ;   write('Valid answer2!\n')
-%     ).
-
 
 askBlocks(Number):-
     write('\nHow many blocks do you wish to move?\n'),

@@ -30,12 +30,11 @@ game_over(Board) :-
     checkGameOverLeft(Board, 1, 1),
     write('===========================\n'),
     write('=====    GAME OVER    =====\n'),
-     tabuleiroVisitado(BoardV),
-     display_game(BoardV),
-     traverseBoard(Board, BoardV, 1, 1, black, 0, BScore),
-     tabuleiroVisitado(BoardV2),
-     traverseBoard(Board, BoardV2, 1, 1, white, 0, WScore),  
-     printWinner(BScore, WScore),  
+    % tabuleiroVisitado(BoardV),
+    % traverseBoard(Board, BoardV, 1, 1, black, 0, BScore),
+    % tabuleiroVisitado(BoardV2),
+    % traverseBoard(Board, BoardV2, 1, 1, white, 0, WScore),  
+    % printWinner(BScore, WScore),  
     write('===========================\n').
 
 printWinner(B, W):-
