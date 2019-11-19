@@ -38,6 +38,8 @@ game_over(Board) :-
     traverseBoard(Board, 1, 1, black, 0, BScore),
     traverseBoard(Board, 1, 1, white, 0, WScore),  
     printWinner(BScore, WScore),
+    write('====      WHITE: '), write(4), write('     ====\n'),
+    write('====      BLACK: '), write(5), write('     ====\n'),
     write('===========================\n').
 
 printWinner(B, W):-
