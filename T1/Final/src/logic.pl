@@ -38,8 +38,8 @@ game_over(Board) :-
     traverseBoard(Board, 1, 1, black, 0, BScore),
     traverseBoard(Board, 1, 1, white, 0, WScore),  
     printWinner(BScore, WScore),
-    write('====      WHITE: '), write(4), write('     ====\n'),
-    write('====      BLACK: '), write(5), write('     ====\n'),
+    write('====      WHITE: '), write(WScore), write('     ====\n'),
+    write('====      BLACK: '), write(BScore), write('     ====\n'),
     write('===========================\n').
 
 printWinner(B, W):-
@@ -225,7 +225,6 @@ checkRowFullLeft(Board, Row, Col):-
     Nextcol is Col - 1,
     checkRowFullLeft(Board, Row, Nextcol).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 getPeca(NLinha, NColuna, Board, Peca):-
     nth1(NLinha, Board, Coluna),
@@ -463,7 +462,7 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
     decr(Steps, NewStep).
 %%
 
- makeMovementRight(Row, Column, Board, Steps, Peca, NewBoard):-
+makeMovementRight(Row, Column, Board, Steps, Peca, NewBoard):-
     NextColumn is Column + 1,
     getPeca(Row, NextColumn, Board, Peca1),  
     (
@@ -682,7 +681,6 @@ traverseBoard(_, 9, _, _, Score, ScoreAux) :-
 	ScoreAux is Score.
 
 traverseBoard(Board, Row, Col, Player, Score, ScoreAux) :-
-    % trace,
     investigaPeca(Board, Row, Col, Player, Score, ScoreAuxInvest, BoardV),
     (
         (ScoreAuxInvest > Score, ScoreAuxTraverse is ScoreAuxInvest)
