@@ -5,6 +5,9 @@ menu :-
     read(Input),
     manageInput(Input).
 
+clear:-
+    write('\33\[2J').
+
 goToMenu(Input):-
     write('\nPress [0] to go back to MAIN MENU.\n\n'),
     read(Input),
@@ -16,41 +19,38 @@ travelBack(0):-
 
 manageInput(0) :-
     %exit program upon input 0 in main menu.
-    write('\n> Exiting FUSE').
+    write('\n> Exiting FUSE'),
+    write('\n| Thanks for playing FUSE |\n\n').
 
 manageInput(1) :-
     %Player vs Player upon input 1 in main menu (easy)
-    write('\33\[2J'),
+    clear,
     write('Starting Player(W) vs Player(B) game\n'),
-    game(white, black),
-    write('\n| Thanks for playing FUSE |\n\n').
+    game(white, black).
+    
 
 manageInput(2) :-
     %Player vs CPU upon input 2 in main menu (easy)
-    write('\33\[2J'),
+    clear,
     write('Starting Player(W) vs CPU(B) game\n'),
-    game2(white, black, 0),
-    write('\n| Thanks for playing FUSE |\n\n').
+    game2(white, black, 0).
 
 manageInput(3) :-
     %Player vs CPU upon input 3 in main menu (normal)
-    write('\33\[2J'),
+    clear,
     write('Starting Player(W) vs CPU(B) game\n'),
-    game2(white, black, 1),
-    write('\n| Thanks for playing FUSE |\n\n').
+    game2(white, black, 1).
 
 manageInput(4) :-
     %CPU vs CPU upon input 4 in main menu
-    write('\33\[2J'), 
+    clear,
     write('Starting CPU(W) vs CPU(B) game\n'),
-    game4(white, black),
-    write('\n| Thanks for playing FUSE |\n\n').
+    game4(white, black).
 
 
 
 displayMenu :-
-    nl,nl,
-    write('\33\[2J'), %clear screen and display menu
+    nl,nl, clear,
     write(' _______________________________________________________ '),nl,
     write('|                                                       |'),nl,
     write('|        ########  ##     ##   ######   ########        |'),nl,
