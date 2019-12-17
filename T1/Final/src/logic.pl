@@ -34,12 +34,6 @@ game_over(Board) :-
     checkGameOverLeft(Board, 1, 1),     %check column 1 between 2 and 7
     write('===========================\n'),
     write('====     GAME OVER     ====\n'),
-    %determine winner here
-    traverseBoard(Board, 1, 1, black, 0, BScore),
-    traverseBoard(Board, 1, 1, white, 0, WScore),  
-    printWinner(BScore, WScore),
-    write('====      WHITE: '), write(4), write('     ====\n'),
-    write('====      BLACK: '), write(5), write('     ====\n'),
     write('===========================\n').
 
 printWinner(B, W):-
@@ -677,14 +671,13 @@ choose_move(CPU, ListOfOutputs, Board, NewBoard):-
 
 
 %%%%% DETERMINE WINNER BELOW %%%%%
-% unfinished :(
 traverseBoard(_, 9, _, _, Score, ScoreAux) :-
 	ScoreAux is Score.
 
 traverseBoard(Board, Row, Col, Player, Score, ScoreAux) :-
-    % trace,
     investigaPeca(Board, Row, Col, Player, Score, ScoreAuxInvest, BoardV),
     (
+        write(Score), write(' '), write(ScoreAuxInvest), nl,
         (ScoreAuxInvest > Score, ScoreAuxTraverse is ScoreAuxInvest)
         ; ScoreAuxTraverse is Score
     ),
@@ -694,18 +687,18 @@ traverseBoard(Board, Row, Col, Player, Score, ScoreAux) :-
         	NewCol > 8, 
             NewRow is Row + 1, %se ultrapassar 8 next row
 			traverseBoard(BoardV, NewRow, 1, Player, ScoreAuxTraverse, S)
-		);
-		traverseBoard(BoardV, Row, NewCol, Player, ScoreAuxTraverse, S)
+		)
+        ; traverseBoard(BoardV, Row, NewCol, Player, ScoreAuxTraverse, S)
 	),
 	ScoreAux is S.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-investigaPeca(Board, Row, Col, _, Score, NewScore, BoardV) :-
+investigaPeca(Board, Row, Col, _, Score, NewS, BoardV) :-
     getPeca(Row, Col, Board, T),
-    \+(checkVisited(Board, T, Row, Col, BoardV)),
+    checkVisited(Board, T, Row, Col, BoardV),
     copy(Board, BoardV),
-    NewScore is Score.
+    NewS is Score.
 
-investigaPeca(Board, Row, Col, Player, Score, NewScore, BoardV) :-
+investigaPeca(Board, Row, Col, Player, Score, NewS, BoardV) :-
     getPeca(Row, Col, Board, T),
     checkVisited(Board, T, Row, Col, BoardV),
     Player == T,
@@ -713,14 +706,14 @@ investigaPeca(Board, Row, Col, Player, Score, NewScore, BoardV) :-
     checkLeft(BoardV, Row, Col, Player, AuxScore, AuxLeft),
     checkRight(BoardV, Row, Col, Player, AuxLeft, AuxRight),
     checkTop(BoardV, Row, Col, Player, AuxRight, AuxTop),
-    checkBottom(BoardV, Row, Col, Player, AuxTop, NewScore).
+    checkBottom(BoardV, Row, Col, Player, AuxTop, NewS).
 
 
-investigaPeca(Board, Row, Col, Player, Score, NewScore, BoardV) :-
+investigaPeca(Board, Row, Col, Player, Score, NewS, BoardV) :-
     getPeca(Row, Col, Board, T),
     checkVisited(Board, T, Row, Col, BoardV),
     Player \= T,
-    NewScore is Score.
+    NewS is Score.
 
 
 
@@ -729,40 +722,40 @@ checkVisited(Board, Peca, Row, Col, RetBoard):-
     setPeca(Row, Col, visited, Board, RetBoard).
 
 
-checkLeft(Board, Row, Col, Player, AuxScore, NewScore):-
+checkLeft(Board, Row, Col, Player, AuxScore, NewS):-
     (
         Col \= 1,
         NCol is Col-1,
         getPeca(Row, NCol, Board, Type),
         Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
+        NewS is AuxScore + 1
+    ); NewS is AuxScore.
 
-checkRight(Board, Row, Col, Player, AuxScore, NewScore):-
+checkRight(Board, Row, Col, Player, AuxScore, NewS):-
     (
         Col \= 8,
         NCol is Col+1,
         getPeca(Row, NCol, Board, Type),
         Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
+        NewS is AuxScore + 1
+    ); NewS is AuxScore.
     
 
-checkTop(Board, Row, Col, Player, AuxScore, NewScore):-
+checkTop(Board, Row, Col, Player, AuxScore, NewS):-
     (
         Row \= 1,
         NRow is Row+1,
         getPeca(NRow, Col, Board,Type),
         Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
+        NewS is AuxScore + 1
+    ); NewS is AuxScore.
 
-checkBottom(Board, Row, Col, Player, AuxScore, NewScore):-
+checkBottom(Board, Row, Col, Player, AuxScore, NewS):-
     (
         Row \= 8,
         NRow is Row-1,
         getPeca(NRow, Col, Board, Type),
         Type == Player,
-        NewScore is AuxScore + 1
-    ); NewScore is AuxScore.
+        NewS is AuxScore + 1
+    ); NewS is AuxScore.
 %%%%% DETERMINE WINNER ABOVE %%%%%
