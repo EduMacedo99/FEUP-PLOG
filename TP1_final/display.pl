@@ -70,7 +70,7 @@ imprimeLinha([Head|Tail]) :-
 randomBoard(FinalBoard):-
     tabuleiroVazio(Board),
     emptyList(Prev),
-    randomTop(Prev, Board, 2, NewBoard),
+    randomTop(Prev, Board, 2, NewBoard, 0, 0),
     emptyList(Prev1),
     randomBottom(Prev1, NewBoard, 2, NewBoard2),
     emptyList(Prev2),
@@ -78,11 +78,11 @@ randomBoard(FinalBoard):-
     emptyList(Prev3),
     randomRight(Prev3, NewBoard3, 2, FinalBoard).
 
-randomTop( _, Board, 8, FinalBoard):-
+randomTop( _, Board, 8, FinalBoard, _, _):-
     copy(Board, FinalBoard),
     true.
 
-randomTop(Prev, Board, Pos, FinalBoard):-
+randomTop(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
     length(Prev, Size),
     (
         Size == 2 ->
@@ -92,25 +92,27 @@ randomTop(Prev, Board, Pos, FinalBoard):-
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
-                Color1 == Color2 , white == Color1 ->
+                Color1 == Color2 , white == Color1, WhiteC == 3 ->
                 fail
                 ;
                 append([white], [Color1], NewPrev),
                 setPeca(1, Pos, white, Board, NewBoard),
                 NewColumn is Pos +1,
-                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+                NewWhiteC is WhiteC + 1,
+                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, NewWhiteC, BlackC)
             )
             ;
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
-                Color1 == Color2 , black == Color1 ->
+                Color1 == Color2 , black == Color1, BlackC == 3 ->
                 fail
                 ;
                 append([black], [Color1], NewPrev),
                 setPeca(1, Pos, black, Board, NewBoard),
+                NewBlackC is BlackC + 1,
                 NewColumn is Pos +1,
-                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, WhiteC, NewBlackC)
 
             )
 
@@ -122,14 +124,16 @@ randomTop(Prev, Board, Pos, FinalBoard):-
             R == 1 ->
             setPeca(1, Pos, white, Board, NewBoard),
             append([white], Prev, NewPrev),
+            NewWhiteC is WhiteC + 1,
             NewColumn is Pos +1,
-            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, NewWhiteC, BlackC)
 
             ;
             setPeca(1, Pos, black, Board, NewBoard),
             append([black], Prev, NewPrev),
+            NewBlackC is BlackC + 1,
             NewColumn is Pos +1,
-            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, WhiteC, NewBlackC)
 
         )
     ).
