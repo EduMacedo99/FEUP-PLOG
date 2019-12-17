@@ -220,7 +220,6 @@ checkRowFullLeft(Board, Row, Col):-
     checkRowFullLeft(Board, Row, Nextcol).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    GAME OVER    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 getPeca(NLinha, NColuna, Board, Peca):-
     nth1(NLinha, Board, Coluna),
     nth1(NColuna, Coluna, Peca).
@@ -457,7 +456,7 @@ move1stepDown(Row, Column, Board, Steps, Peca, NewBoard, NewStep):-
     decr(Steps, NewStep).
 %%
 
- makeMovementRight(Row, Column, Board, Steps, Peca, NewBoard):-
+makeMovementRight(Row, Column, Board, Steps, Peca, NewBoard):-
     NextColumn is Column + 1,
     getPeca(Row, NextColumn, Board, Peca1),  
     (

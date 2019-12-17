@@ -5,6 +5,9 @@ menu :-
     read(Input),
     manageInput(Input).
 
+clear:-
+    write('\33\[2J').
+
 goToMenu(Input):-
     write('\nPress [0] to go back to MAIN MENU.\n\n'),
     read(Input),
@@ -40,15 +43,14 @@ manageInput(3) :-
 
 manageInput(4) :-
     %CPU vs CPU upon input 4 in main menu
-    clear, 
+    clear,
     write('Starting CPU(W) vs CPU(B) game\n'),
     game4(white, black).
 
 
 
 displayMenu :-
-    nl,nl,
-    clear, %clear screen and display menu
+    nl,nl, clear,
     write(' _______________________________________________________ '),nl,
     write('|                                                       |'),nl,
     write('|        ########  ##     ##   ######   ########        |'),nl,

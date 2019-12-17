@@ -70,25 +70,27 @@ imprimeLinha([Head|Tail]) :-
 randomBoard(FinalBoard):-
     tabuleiroVazio(Board),
     emptyList(Prev),
-    randomTop(Prev, Board, 2, NewBoard),
+    randomTop(Prev, Board, 2, NewBoard, 0, 0),
     emptyList(Prev1),
-    randomBottom(Prev1, NewBoard, 2, NewBoard2),
+    randomBottom(Prev1, NewBoard, 2, NewBoard2, 0, 0),
     emptyList(Prev2),
-    randomLeft(Prev2, NewBoard2, 2, NewBoard3),
+    randomLeft(Prev2, NewBoard2, 2, NewBoard3, 0, 0),
     emptyList(Prev3),
-    randomRight(Prev3, NewBoard3, 2, FinalBoard).
+    randomRight(Prev3, NewBoard3, 2, FinalBoard, 0, 0).
 
-randomTop( _, Board, 8, FinalBoard):-
+randomTop( _, Board, 8, FinalBoard, _, _):-
     copy(Board, FinalBoard),
     true.
 
-randomTop(Prev, Board, Pos, FinalBoard):-
+randomTop(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
     length(Prev, Size),
     (
         Size == 2 ->
         random(1, 3, R),
         (
+            
             R == 1 ->
+            (WhiteC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -98,9 +100,11 @@ randomTop(Prev, Board, Pos, FinalBoard):-
                 append([white], [Color1], NewPrev),
                 setPeca(1, Pos, white, Board, NewBoard),
                 NewColumn is Pos +1,
-                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+                NewWhiteC is WhiteC + 1,
+                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, NewWhiteC, BlackC)
             )
             ;
+            (BlackC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -109,8 +113,9 @@ randomTop(Prev, Board, Pos, FinalBoard):-
                 ;
                 append([black], [Color1], NewPrev),
                 setPeca(1, Pos, black, Board, NewBoard),
+                NewBlackC is BlackC + 1,
                 NewColumn is Pos +1,
-                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+                randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, WhiteC, NewBlackC)
 
             )
 
@@ -122,34 +127,37 @@ randomTop(Prev, Board, Pos, FinalBoard):-
             R == 1 ->
             setPeca(1, Pos, white, Board, NewBoard),
             append([white], Prev, NewPrev),
+            NewWhiteC is WhiteC + 1,
             NewColumn is Pos +1,
-            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, NewWhiteC, BlackC)
 
             ;
             setPeca(1, Pos, black, Board, NewBoard),
             append([black], Prev, NewPrev),
+            NewBlackC is BlackC + 1,
             NewColumn is Pos +1,
-            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard)
+            randomTop(NewPrev, NewBoard, NewColumn, FinalBoard, WhiteC, NewBlackC)
 
         )
     ).
 
 
 
-randomTop(Prev, Board, Pos, FinalBoard):-
-    randomTop(Prev, Board, Pos, FinalBoard).
+randomTop(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
+    randomTop(Prev, Board, Pos, FinalBoard, WhiteC, BlackC).
 
-randomBottom( _, Board, 8, FinalBoard):-
+randomBottom( _, Board, 8, FinalBoard, _, _):-
     copy(Board, FinalBoard),
     true.
 
-randomBottom(Prev, Board, Pos, FinalBoard):-
+randomBottom(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
     length(Prev, Size),
     (
         Size == 2 ->
         random(1, 3, R),
         (
             R == 1 ->
+            (WhiteC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -158,11 +166,13 @@ randomBottom(Prev, Board, Pos, FinalBoard):-
                 ;
                 append([white], [Color1], NewPrev),
                 setPeca(8, Pos, white, Board, NewBoard),
+                NewWhiteC is WhiteC +1,
                 NewColumn is Pos +1,
-                randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+                randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard, NewWhiteC, BlackC)
 
             )
             ;
+            (BlackC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -171,8 +181,9 @@ randomBottom(Prev, Board, Pos, FinalBoard):-
                 ;
                 append([black], [Color1], NewPrev),
                 setPeca(8, Pos, black, Board, NewBoard),
+                NewBlackC is BlackC +1,
                 NewColumn is Pos +1,
-                randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+                randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard, WhiteC, NewBlackC)
             )
         )
 
@@ -182,32 +193,35 @@ randomBottom(Prev, Board, Pos, FinalBoard):-
             R == 1 ->
             setPeca(8, Pos, white, Board, NewBoard),
             append([white], Prev, NewPrev),
+            NewWhiteC is WhiteC +1,
             NewColumn is Pos +1,
-            randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+            randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard, NewWhiteC, BlackC)
 
             ;
             setPeca(8, Pos, black, Board, NewBoard),
             append([black], Prev, NewPrev),
+            NewBlackC is BlackC +1,
             NewColumn is Pos +1,
-            randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard)
+            randomBottom(NewPrev, NewBoard, NewColumn, FinalBoard, WhiteC, NewBlackC)
 
         )
     ).
 
-randomBottom(Prev, Board, Pos, FinalBoard):-
-    randomBottom(Prev, Board, Pos, FinalBoard).
+randomBottom(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
+    randomBottom(Prev, Board, Pos, FinalBoard, WhiteC, BlackC).
 
-randomLeft( _, Board, 8, FinalBoard):-
+randomLeft( _, Board, 8, FinalBoard, _, _):-
     copy(Board, FinalBoard),
     true.
 
-randomLeft(Prev, Board, Pos, FinalBoard):-
+randomLeft(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
     length(Prev, Size),
     (
         Size == 2 ->
         random(1, 3, R),
         (
             R == 1 ->
+            (WhiteC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -216,11 +230,13 @@ randomLeft(Prev, Board, Pos, FinalBoard):-
                 ;
                 append([white], [Color1], NewPrev),
                 setPeca(Pos, 1, white, Board, NewBoard),
+                NewWhiteC is WhiteC +1,
                 NewRow is Pos +1,
-                randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+                randomLeft(NewPrev, NewBoard, NewRow, FinalBoard, NewWhiteC, BlackC)
 
             )
             ;
+            (BlackC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -229,8 +245,9 @@ randomLeft(Prev, Board, Pos, FinalBoard):-
                 ;
                 append([black], [Color1], NewPrev),
                 setPeca(Pos, 1, black, Board, NewBoard),
+                NewBlackC is BlackC +1,
                 NewRow is Pos +1,
-                randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+                randomLeft(NewPrev, NewBoard, NewRow, FinalBoard, WhiteC, NewBlackC)
 
             )
 
@@ -242,39 +259,42 @@ randomLeft(Prev, Board, Pos, FinalBoard):-
             R == 1 ->
             setPeca(Pos, 1, white, Board, NewBoard),
             append([white], Prev, NewPrev),
+            NewWhiteC is WhiteC +1,
             NewRow is Pos +1,
-            randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+            randomLeft(NewPrev, NewBoard, NewRow, FinalBoard, NewWhiteC, BlackC)
 
             ;
             setPeca(Pos, 1, black, Board, NewBoard),
             append([black], Prev, NewPrev),
+            NewBlackC is BlackC +1,
             NewRow is Pos +1,
-            randomLeft(NewPrev, NewBoard, NewRow, FinalBoard)
+            randomLeft(NewPrev, NewBoard, NewRow, FinalBoard, WhiteC, NewBlackC)
 
         )
     ).
 
 
 
-randomLeft(Prev, Board, Pos, FinalBoard):-
-    randomLeft(Prev, Board, Pos, FinalBoard).
+randomLeft(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
+    randomLeft(Prev, Board, Pos, FinalBoard, WhiteC, BlackC).
 
 
 
 
 
 
-randomRight( _, Board, 8, FinalBoard):-
+randomRight( _, Board, 8, FinalBoard, _, _):-
     copy(Board, FinalBoard),
     true.
 
-randomRight(Prev, Board, Pos, FinalBoard):-
+randomRight(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
     length(Prev, Size),
     (
         Size == 2 ->
         random(1, 3, R),
         (
             R == 1 ->
+            (WhiteC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -283,11 +303,13 @@ randomRight(Prev, Board, Pos, FinalBoard):-
                 ;
                 append([white], [Color1], NewPrev),
                 setPeca(Pos, 8, white, Board, NewBoard),
+                NewWhiteC is WhiteC +1,
                 NewRow is Pos +1,
-                randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
+                randomRight(NewPrev, NewBoard, NewRow, FinalBoard, NewWhiteC, BlackC)
 
             )
             ;
+            (BlackC == 3 -> fail; write('')),
             nth1(1, Prev, Color1),
             nth1(2, Prev, Color2),
             (
@@ -296,8 +318,9 @@ randomRight(Prev, Board, Pos, FinalBoard):-
                 ;
                 append([black], [Color1], NewPrev),
                 setPeca(Pos, 8, black, Board, NewBoard),
+                NewBlackC is BlackC +1,
                 NewRow is Pos +1,
-                randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
+                randomRight(NewPrev, NewBoard, NewRow, FinalBoard, WhiteC, NewBlackC)
 
             )
 
@@ -309,19 +332,21 @@ randomRight(Prev, Board, Pos, FinalBoard):-
             R == 1 ->
             setPeca(Pos, 8, white, Board, NewBoard),
             append([white], Prev, NewPrev),
+            NewWhiteC is WhiteC +1,
             NewRow is Pos +1,
-            randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
+            randomRight(NewPrev, NewBoard, NewRow, FinalBoard, NewWhiteC, BlackC)
 
             ;
             setPeca(Pos, 8, black, Board, NewBoard),
             append([black], Prev, NewPrev),
+            NewBlackC is BlackC +1,
             NewRow is Pos +1,
-            randomRight(NewPrev, NewBoard, NewRow, FinalBoard)
+            randomRight(NewPrev, NewBoard, NewRow, FinalBoard, WhiteC, NewBlackC)
 
         )
     ).
 
 
 
-randomRight(Prev, Board, Pos, FinalBoard):-
-    randomRight(Prev, Board, Pos, FinalBoard).
+randomRight(Prev, Board, Pos, FinalBoard, WhiteC, BlackC):-
+    randomRight(Prev, Board, Pos, FinalBoard, WhiteC, BlackC).
